@@ -1,0 +1,1457 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetIQ — Documentación de Features</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --brand: #0d9488;
+      --brand-light: #14b8a6;
+      --brand-dark: #0f766e;
+      --shadow: 0 1px 3px rgba(0,0,0,0.04);
+      --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    /* TITLE */
+    .doc-header {
+      text-align: center;
+      margin-bottom: 4rem;
+      padding: 3rem 1rem;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: 24px;
+      color: white;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      position: relative;
+      overflow: hidden;
+    }
+    .doc-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(13,148,136,0.15) 0%, transparent 70%);
+    }
+    .doc-header h1 { font-size: 3rem; font-weight: 900; letter-spacing: -0.03em; margin-bottom: 0.5rem; position: relative; }
+    .doc-header h1 span { background: linear-gradient(135deg, #14b8a6, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .doc-header p { color: rgba(255,255,255,0.6); font-size: 1.1rem; position: relative; max-width: 500px; margin: 0 auto; }
+
+    /* TOC */
+    .toc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 3rem;
+      box-shadow: var(--shadow);
+    }
+    .toc h2 { font-size: 1rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .toc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 0.4rem; }
+    .toc a {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      padding: 0.4rem 0.6rem;
+      border-radius: 8px;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .toc a:hover { background: var(--bg); color: var(--brand); }
+
+    /* FEATURE SECTION */
+    .feature {
+      margin-bottom: 4rem;
+    }
+    .feature-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--border);
+    }
+    .feature-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      flex-shrink: 0;
+    }
+    .feature-header h2 { font-size: 1.5rem; font-weight: 800; }
+    .feature-header .tag {
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+    }
+    .tag-now { background: rgba(16,185,129,0.1); color: #059669; border: 1px solid rgba(16,185,129,0.15); }
+    .tag-new { background: rgba(99,102,241,0.1); color: #6366f1; border: 1px solid rgba(99,102,241,0.15); }
+
+    .feature-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .feature-desc p {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 1rem;
+    }
+    .feature-desc ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .feature-desc ul li {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      padding: 0.5rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .feature-desc ul li .check { color: var(--brand); font-weight: 700; }
+
+    /* PHONE MOCKUP */
+    .phone {
+      width: 280px;
+      margin: 0 auto;
+      background: #0f172a;
+      border-radius: 36px;
+      padding: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2), inset 0 0 0 1px rgba(255,255,255,0.06);
+      position: relative;
+    }
+    .phone-notch {
+      width: 120px;
+      height: 24px;
+      background: #0f172a;
+      border-radius: 0 0 16px 16px;
+      margin: -12px auto 8px;
+      position: relative;
+      z-index: 2;
+    }
+    .phone-notch::after {
+      content: '';
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #1e293b;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .phone-screen {
+      background: #f8fafc;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 500px;
+      position: relative;
+    }
+    .phone-screen.dark { background: #0f172a; }
+
+    /* MOCKUP INTERNAL STYLES */
+    .mock-status {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 1rem 0.25rem;
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .mock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 1rem;
+    }
+    .mock-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #0d9488, #14b8a6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 0.75rem;
+    }
+    .mock-header h3 { font-size: 0.85rem; font-weight: 700; }
+    .mock-header p { font-size: 0.65rem; color: var(--text-muted); }
+
+    .mock-card {
+      margin: 0.5rem 1rem;
+      padding: 1rem;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #0f172a, #1e293b);
+      color: white;
+    }
+    .mock-card .label { font-size: 0.6rem; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.03em; }
+    .mock-card .amount { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin: 0.2rem 0 0.5rem; }
+    .mock-card .row { display: flex; justify-content: space-between; font-size: 0.7rem; }
+    .mock-card .row span:last-child { font-weight: 600; }
+    .mock-card .green { color: #10b981; }
+    .mock-card .red { color: #ef4444; }
+
+    .mock-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.2rem;
+      height: 24px;
+      margin: 0.5rem 0;
+    }
+    .mock-bars div {
+      flex: 1;
+      border-radius: 2px 2px 0 0;
+      background: linear-gradient(to top, #0d9488, #14b8a6);
+      opacity: 0.3;
+      min-height: 3px;
+    }
+    .mock-bars div:nth-child(1) { height: 30%; }
+    .mock-bars div:nth-child(2) { height: 50%; }
+    .mock-bars div:nth-child(3) { height: 25%; }
+    .mock-bars div:nth-child(4) { height: 60%; }
+    .mock-bars div:nth-child(5) { height: 40%; }
+    .mock-bars div:nth-child(6) { height: 70%; opacity: 1; }
+    .mock-bars div:nth-child(7) { height: 45%; }
+    .mock-bars div:nth-child(8) { height: 55%; }
+
+    .mock-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.4rem;
+      padding: 0 1rem;
+      margin-bottom: 0.5rem;
+    }
+    .mock-grid-item {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 0.6rem 0.5rem;
+      text-align: center;
+    }
+    .mock-grid-item .icon { font-size: 1rem; margin-bottom: 0.2rem; }
+    .mock-grid-item .name { font-size: 0.6rem; font-weight: 600; }
+    .mock-grid-item .desc { font-size: 0.5rem; color: var(--text-muted); }
+
+    .mock-list { padding: 0 1rem; }
+    .mock-list-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .mock-list-item:last-child { border: none; }
+    .mock-list-item .l-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      flex-shrink: 0;
+    }
+    .mock-list-item .l-info { flex: 1; }
+    .mock-list-item .l-info .t { font-size: 0.7rem; font-weight: 600; }
+    .mock-list-item .l-info .m { font-size: 0.6rem; color: var(--text-muted); }
+    .mock-list-item .l-amount { font-size: 0.7rem; font-weight: 700; }
+
+    .mock-nav {
+      display: flex;
+      justify-content: space-around;
+      padding: 0.5rem 0.75rem;
+      margin-top: 0.5rem;
+      border-top: 1px solid #e2e8f0;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(10px);
+    }
+    .mock-nav-item {
+      text-align: center;
+      font-size: 0.5rem;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.1rem;
+    }
+    .mock-nav-item .n-icon { font-size: 1rem; }
+    .mock-nav-item.active { color: #0d9488; }
+
+    /* AI MODE MOCKUP */
+    .mock-ai-header {
+      background: linear-gradient(135deg, rgba(99,102,241,0.1), rgba(13,148,136,0.05));
+      border-bottom: 1px solid rgba(99,102,241,0.1);
+      padding: 1rem;
+      text-align: center;
+    }
+    .mock-ai-header .ai-icon {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #818cf8);
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 0.4rem;
+      font-size: 1rem;
+    }
+    .mock-ai-header h3 { font-size: 0.8rem; font-weight: 700; }
+    .mock-ai-header p { font-size: 0.6rem; color: var(--text-muted); }
+
+    .mock-ai-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3rem;
+      padding: 0.5rem 1rem;
+    }
+    .mock-ai-stat {
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 0.5rem;
+      text-align: center;
+    }
+    .mock-ai-stat .v { font-size: 0.85rem; font-weight: 800; }
+    .mock-ai-stat .l { font-size: 0.55rem; color: var(--text-muted); text-transform: uppercase; }
+
+    .mock-alloc {
+      padding: 0.5rem 1rem;
+    }
+    .mock-alloc-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 0;
+    }
+    .mock-alloc-item .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .mock-alloc-item .bar-bg {
+      flex: 1;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .mock-alloc-item .bar-bg div {
+      height: 100%;
+      border-radius: 2px;
+    }
+    .mock-alloc-item .alloc-label {
+      font-size: 0.6rem;
+      color: var(--text-secondary);
+      min-width: 50px;
+      text-align: right;
+    }
+
+    .mock-chat-input {
+      display: flex;
+      gap: 0.4rem;
+      padding: 0.5rem 1rem;
+      border-top: 1px solid #e2e8f0;
+      margin-top: 0.5rem;
+    }
+    .mock-chat-input div {
+      flex: 1;
+      height: 28px;
+      background: #f1f5f9;
+      border-radius: 9999px;
+    }
+    .mock-chat-input button {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #0d9488;
+      border: none;
+    }
+
+    /* MOCKUP: budgets */
+    .mock-budget-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+    }
+    .mock-budget-item .b-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+    .mock-budget-item .b-info { flex: 1; }
+    .mock-budget-item .b-info .n { font-size: 0.7rem; font-weight: 600; }
+    .mock-budget-item .b-info .s { font-size: 0.55rem; color: var(--text-muted); }
+    .mock-budget-item .b-bar {
+      width: 60px;
+      height: 4px;
+      background: #e2e8f0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .mock-budget-item .b-bar div { height: 100%; border-radius: 2px; }
+    .mock-budget-item .b-pct { font-size: 0.6rem; font-weight: 600; min-width: 28px; text-align: right; }
+
+    /* MOCKUP: settings */
+    .mock-settings-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.65rem 1rem;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .mock-settings-item:last-child { border: none; }
+    .mock-settings-item .s-left { display: flex; align-items: center; gap: 0.6rem; }
+    .mock-settings-item .s-icon {
+      width: 28px; height: 28px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+    .mock-settings-item .s-label { font-size: 0.7rem; font-weight: 600; }
+    .mock-settings-item .s-value { font-size: 0.65rem; color: var(--text-muted); }
+    .mock-toggle {
+      width: 32px;
+      height: 18px;
+      border-radius: 9999px;
+      background: var(--brand);
+      position: relative;
+    }
+    .mock-toggle::after {
+      content: '';
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: white;
+      position: absolute;
+      right: 2px;
+      top: 2px;
+    }
+    .mock-toggle.off { background: #cbd5e1; }
+    .mock-toggle.off::after { left: 2px; right: auto; }
+
+    /* MOCKUP: scan */
+    .mock-camera {
+      margin: 1rem;
+      height: 130px;
+      background: #e2e8f0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: var(--text-muted);
+      border: 2px dashed #cbd5e1;
+    }
+    .mock-scan-result {
+      margin: 0.5rem 1rem;
+      padding: 0.75rem;
+      background: white;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+    }
+    .mock-scan-result .row { display: flex; justify-content: space-between; padding: 0.3rem 0; font-size: 0.65rem; border-bottom: 1px solid #f1f5f9; }
+    .mock-scan-result .row:last-child { border: none; }
+    .mock-scan-result .row .key { color: var(--text-muted); }
+    .mock-scan-result .row .val { font-weight: 600; }
+
+    /* MOCKUP: shared finances */
+    .mock-members {
+      display: flex;
+      justify-content: center;
+      gap: -0.3rem;
+      padding: 0.5rem 1rem;
+    }
+    .mock-members .member {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: white;
+      margin-left: -8px;
+    }
+    .mock-members .member:first-child { margin-left: 0; }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .feature-body { grid-template-columns: 1fr; }
+      .phone { width: 240px; }
+      .phone-screen { min-height: 420px; }
+      .doc-header h1 { font-size: 2rem; }
+    }
+
+    /* SECTIONS INDEX */
+    .sections-preview {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    .section-pill {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.75rem 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      text-align: center;
+    }
+    .section-pill .sp-icon { font-size: 1.3rem; }
+    .section-pill .sp-name { font-size: 0.75rem; font-weight: 600; }
+    .section-pill .sp-desc { font-size: 0.6rem; color: var(--text-muted); line-height: 1.2; }
+    .section-pill.new { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.04); }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <!-- HEADER -->
+    <div class="doc-header">
+      <h1>BudgetIQ <span>Features</span></h1>
+      <p>Documentación visual de todas las funcionalidades de la aplicación</p>
+    </div>
+
+    <!-- NAVIGATION / TABS OVERVIEW -->
+    <div class="toc">
+      <h2>🧭 Navegación — Todas las pestañas de la app</h2>
+      <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:1rem;">Barra inferior con 5 secciones principales + botón flotante + drawer lateral de ajustes</p>
+      <div class="sections-preview">
+        <div class="section-pill">
+          <div class="sp-icon">🏠</div>
+          <div class="sp-name">Inicio</div>
+          <div class="sp-desc">Dashboard principal</div>
+        </div>
+        <div class="section-pill">
+          <div class="sp-icon">📊</div>
+          <div class="sp-name">Estadísticas</div>
+          <div class="sp-desc">Gráficos e informes</div>
+        </div>
+        <div class="section-pill">
+          <div class="sp-icon">💳</div>
+          <div class="sp-name">Movimientos</div>
+          <div class="sp-desc">Todas las transacciones</div>
+        </div>
+        <div class="section-pill">
+          <div class="sp-icon">🤖</div>
+          <div class="sp-name">Modo IA</div>
+          <div class="sp-desc">Optimizador + Chat</div>
+        </div>
+        <div class="section-pill">
+          <div class="sp-icon">📋</div>
+          <div class="sp-name">Presupuestos</div>
+          <div class="sp-desc">Límites y metas</div>
+        </div>
+        <div class="section-pill">
+          <div class="sp-icon">👤</div>
+          <div class="sp-name">Perfil</div>
+          <div class="sp-desc">Cuenta y datos</div>
+        </div>
+        <div class="section-pill new">
+          <div class="sp-icon">📸</div>
+          <div class="sp-name">Escanear</div>
+          <div class="sp-desc">Ticket → datos</div>
+        </div>
+        <div class="section-pill new">
+          <div class="sp-icon">👥</div>
+          <div class="sp-name">Compartir</div>
+          <div class="sp-desc">Finanzas en grupo</div>
+        </div>
+        <div class="section-pill new">
+          <div class="sp-icon">📅</div>
+          <div class="sp-name">Calendario</div>
+          <div class="sp-desc">Vista mensual</div>
+        </div>
+        <div class="section-pill new">
+          <div class="sp-icon">🎯</div>
+          <div class="sp-name">Metas</div>
+          <div class="sp-desc">Ahorro objetivos</div>
+        </div>
+        <div class="section-pill">
+          <div class="sp-icon">⚙️</div>
+          <div class="sp-name">Ajustes</div>
+          <div class="sp-desc">Configuración</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 1: DASHBOARD -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(13,148,136,0.1);">🏠</div>
+        <div>
+          <h2>Dashboard / Inicio</h2>
+          <span class="tag tag-now">Implementado</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Pantalla principal que el usuario ve al abrir la app. Muestra un resumen completo de su situación financiera del mes actual.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Saldo total</strong> con gráfico de tendencia de 14 días</li>
+            <li><span class="check">✓</span> <strong>Ingresos / Gastos / Ahorro</strong> del mes actual</li>
+            <li><span class="check">✓</span> <strong>Health Score</strong> financiero (0-100) con color según estado</li>
+            <li><span class="check">✓</span> <strong>Acciones rápidas</strong>: Modo Manual, Modo IA, Presupuestos, Escanear</li>
+            <li><span class="check">✓</span> <strong>Actividad reciente</strong> con últimas 6 transacciones</li>
+            <li><span class="check">✓</span> <strong>Insights automáticos</strong> según comportamiento de gasto</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div class="mock-header">
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <div class="mock-avatar">J</div>
+                <div><h3>Javier</h3><p>Buenos días ☀️</p></div>
+              </div>
+              <div style="display:flex;gap:0.3rem;">
+                <span style="font-size:0.8rem;">🔔</span>
+                <span style="font-size:0.8rem;">⚙️</span>
+              </div>
+            </div>
+            <div class="mock-card">
+              <div class="label">Saldo total · Este mes</div>
+              <div class="amount">$2,847.50</div>
+              <div class="mock-bars">
+                <div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div>
+              </div>
+              <div class="row">
+                <span>Ingresos</span><span class="green">+$3,200</span>
+                <span>Gastos</span><span class="red">-$352</span>
+                <span>Ahorro</span><span class="green">+$2,847</span>
+              </div>
+            </div>
+            <div style="font-size:0.65rem;font-weight:700;padding:0.5rem 1rem 0;">Acciones rápidas</div>
+            <div class="mock-grid">
+              <div class="mock-grid-item"><div class="icon">✍️</div><div class="name">Manual</div><div class="desc">Control total</div></div>
+              <div class="mock-grid-item"><div class="icon">🤖</div><div class="name">Modo IA</div><div class="desc">Optimizar</div></div>
+              <div class="mock-grid-item"><div class="icon">📊</div><div class="name">Presupuestos</div><div class="desc">Metas</div></div>
+              <div class="mock-grid-item"><div class="icon">📸</div><div class="name">Escanear</div><div class="desc">Ticket</div></div>
+            </div>
+            <div style="font-size:0.65rem;font-weight:700;padding:0.5rem 1rem 0;">Actividad reciente</div>
+            <div class="mock-list">
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(99,102,241,0.1);">🏠</div>
+                <div class="l-info"><div class="t">Alquiler Mayo</div><div class="m">Hoy · Vivienda</div></div>
+                <div class="l-amount" style="color:#ef4444;">-$900</div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(245,158,11,0.1);">🛒</div>
+                <div class="l-info"><div class="t">Supermercado</div><div class="m">Ayer · Alimentación</div></div>
+                <div class="l-amount" style="color:#ef4444;">-$156</div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(16,185,129,0.1);">💼</div>
+                <div class="l-info"><div class="t">Nómina</div><div class="m">1 may · Salario</div></div>
+                <div class="l-amount" style="color:#10b981;">+$3,200</div>
+              </div>
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item active"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 2: TRANSACCIONES (MANUAL) -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.1);">✍️</div>
+        <div>
+          <h2>Modo Manual — Transacciones</h2>
+          <span class="tag tag-now">Implementado</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Control total sobre cada movimiento financiero. El usuario añade, edita y elimina transacciones manualmente.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Añadir gasto/ingreso</strong> con tipo, categoría y fecha</li>
+            <li><span class="check">✓</span> <strong>Filtros</strong>: por tipo (ingreso/gasto), categoría y búsqueda por texto</li>
+            <li><span class="check">✓</span> <strong>Ordenar</strong> por fecha, monto o categoría (asc/desc)</li>
+            <li><span class="check">✓</span> <strong>Editar</strong> transacciones existentes</li>
+            <li><span class="check">✓</span> <strong>Eliminar</strong> con confirmación visual</li>
+            <li><span class="check">✓</span> <strong>Resumen</strong>: total ingresos, gastos y número de transacciones</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">Movimientos</h3>
+              <span style="font-size:0.65rem;color:var(--brand);font-weight:600;">+ Nueva</span>
+            </div>
+            <div style="display:flex;gap:0.3rem;padding:0 1rem;">
+              <div style="flex:1;padding:0.3rem;background:#f1f5f9;border-radius:9999px;font-size:0.55rem;text-align:center;font-weight:600;">Todas</div>
+              <div style="flex:1;padding:0.3rem;background:white;border:1px solid #e2e8f0;border-radius:9999px;font-size:0.55rem;text-align:center;color:var(--text-muted);">Ingresos</div>
+              <div style="flex:1;padding:0.3rem;background:white;border:1px solid #e2e8f0;border-radius:9999px;font-size:0.55rem;text-align:center;color:var(--text-muted);">Gastos</div>
+            </div>
+            <div style="display:flex;gap:0.3rem;padding:0.4rem 1rem;">
+              <div style="flex:1;height:24px;background:#f1f5f9;border-radius:9999px;"></div>
+              <div style="font-size:0.55rem;padding:0.25rem 0.5rem;background:white;border:1px solid #e2e8f0;border-radius:9999px;color:var(--text-muted);">Categoría ▾</div>
+            </div>
+            <div class="mock-list" style="padding-top:0;">
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(99,102,241,0.1);">🏠</div>
+                <div class="l-info"><div class="t">Alquiler Mayo</div><div class="m">Hoy · Vivienda</div></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span style="font-size:0.6rem;color:var(--text-muted);">✏️</span>
+                  <span class="l-amount" style="color:#ef4444;">-$900</span>
+                </div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(245,158,11,0.1);">🛒</div>
+                <div class="l-info"><div class="t">Mercadona</div><div class="m">Ayer · Alimentación</div></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span style="font-size:0.6rem;color:var(--text-muted);">✏️</span>
+                  <span class="l-amount" style="color:#ef4444;">-$156</span>
+                </div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(16,185,129,0.1);">💼</div>
+                <div class="l-info"><div class="t">Nómina Abril</div><div class="m">1 may · Salario</div></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span style="font-size:0.6rem;color:var(--text-muted);">✏️</span>
+                  <span class="l-amount" style="color:#10b981;">+$3,200</span>
+                </div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(236,72,153,0.1);">🍕</div>
+                <div class="l-info"><div class="t">Cena italiana</div><div class="m">30 abr · Restaurante</div></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span style="font-size:0.6rem;color:var(--text-muted);">✏️</span>
+                  <span class="l-amount" style="color:#ef4444;">-$42</span>
+                </div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(16,185,129,0.1);">⛽</div>
+                <div class="l-info"><div class="t">Gasolina</div><div class="m">29 abr · Transporte</div></div>
+                <div style="display:flex;align-items:center;gap:0.3rem;">
+                  <span style="font-size:0.6rem;color:var(--text-muted);">✏️</span>
+                  <span class="l-amount" style="color:#ef4444;">-$65</span>
+                </div>
+              </div>
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item active"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 3: MODO IA -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(99,102,241,0.1);">🤖</div>
+        <div>
+          <h2>Modo IA — Optimizador Inteligente</h2>
+          <span class="tag tag-now">Implementado</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>El motor de IA analiza ingresos, gastos y presupuestos para generar un plan de distribución personalizado. Incluye chat financiero interactivo.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Plan mensual</strong> con distribución por categorías según perfil de gasto</li>
+            <li><span class="check">✓</span> <strong>Personalidades</strong>: Balanceada, Ahorro Agresivo, Flexible</li>
+            <li><span class="check">✓</span> <strong>Chat financiero</strong>: preguntas en lenguaje natural sobre tus finanzas</li>
+            <li><span class="check">✓</span> <strong>Predicciones</strong>: "Si reduzco un 30% en ocio, ¿cuánto ahorro?"</li>
+            <li><span class="check">✓</span> <strong>Comparativa</strong>: gasto actual vs recomendación de la IA</li>
+            <li><span class="check">✓</span> <strong>Metas inteligentes</strong> con plan de ahorro personalizado</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status" style="color:rgba(255,255,255,0.5);">9:41</div>
+            <div class="mock-ai-header">
+              <div class="ai-icon">🤖</div>
+              <h3 style="color:white;">Optimizador IA</h3>
+              <p style="color:rgba(255,255,255,0.5);">Plan inteligente · Balanceado</p>
+            </div>
+            <div class="mock-ai-stats">
+              <div class="mock-ai-stat">
+                <div class="v" style="color:#0f172a;">$3,000</div>
+                <div class="l">Ingreso mensual</div>
+              </div>
+              <div class="mock-ai-stat">
+                <div class="v" style="color:#10b981;">$360</div>
+                <div class="l">Ahorro recomendado</div>
+              </div>
+            </div>
+            <div style="font-size:0.65rem;font-weight:600;padding:0.4rem 1rem;">Distribución recomendada</div>
+            <div class="mock-alloc">
+              <div class="mock-alloc-item">
+                <div class="dot" style="background:#6366f1;"></div>
+                <div class="bar-bg"><div style="width:30%;background:#6366f1;"></div></div>
+                <span class="alloc-label">Vivienda 28%</span>
+              </div>
+              <div class="mock-alloc-item">
+                <div class="dot" style="background:#f59e0b;"></div>
+                <div class="bar-bg"><div style="width:15%;background:#f59e0b;"></div></div>
+                <span class="alloc-label">Comida 14%</span>
+              </div>
+              <div class="mock-alloc-item">
+                <div class="dot" style="background:#10b981;"></div>
+                <div class="bar-bg"><div style="width:12%;background:#10b981;"></div></div>
+                <span class="alloc-label">Transporte 8%</span>
+              </div>
+              <div class="mock-alloc-item">
+                <div class="dot" style="background:#22c55e;"></div>
+                <div class="bar-bg"><div style="width:18%;background:#22c55e;"></div></div>
+                <span class="alloc-label">Ahorro 12%</span>
+              </div>
+            </div>
+            <div style="padding:0.5rem 1rem;">
+              <div style="padding:0.5rem;background:#f1f5f9;border-radius:8px;font-size:0.6rem;color:var(--text-secondary);">
+                💬 <strong>Tú:</strong> ¿Cómo puedo ahorrar 200€ más al mes?
+              </div>
+              <div style="padding:0.5rem;background:rgba(99,102,241,0.06);border-radius:8px;font-size:0.6rem;color:var(--text-secondary);margin-top:0.3rem;border:1px solid rgba(99,102,241,0.1);">
+                🤖 <strong>IA:</strong> Reduciendo un 15% en restaurantes y un 10% en compras online, ahorrarías ~215€/mes.
+              </div>
+            </div>
+            <div class="mock-chat-input">
+              <div></div>
+              <button></button>
+            </div>
+            <div class="mock-nav" style="background:#0f172a;border-color:#1e293b;">
+              <div class="mock-nav-item" style="color:rgba(255,255,255,0.4);"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item" style="color:rgba(255,255,255,0.4);"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item active" style="color:#818cf8;"><span class="n-icon">🤖</span>IA</div>
+              <div class="mock-nav-item" style="color:rgba(255,255,255,0.4);"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 4: PRESUPUESTOS -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(16,185,129,0.1);">📊</div>
+        <div>
+          <h2>Presupuestos</h2>
+          <span class="tag tag-now">Implementado</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Gestión de límites de gasto por categoría con seguimiento visual del progreso.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Presupuesto mensual</strong> por categoría (vivienda, comida, ocio...)</li>
+            <li><span class="check">✓</span> <strong>Barras de progreso</strong> con color según estado (verde/naranja/rojo)</li>
+            <li><span class="check">✓</span> <strong>Crear nuevos</strong> presupuestos para categorías sin asignar</li>
+            <li><span class="check">✓</span> <strong>Editar límites</strong> directamente desde la tarjeta</li>
+            <li><span class="check">✓</span> <strong>Resetear gastos</strong> mensualmente con un clic</li>
+            <li><span class="check">✓</span> <strong>Alerta de presupuestos en riesgo</strong> (porcentaje cercano al límite)</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">Presupuestos</h3>
+              <span style="font-size:0.65rem;color:var(--brand);font-weight:600;">+ Añadir</span>
+            </div>
+            <div class="mock-budget-item">
+              <div class="b-icon" style="background:rgba(99,102,241,0.1);">🏠</div>
+              <div class="b-info"><div class="n">Vivienda</div><div class="s">$900 / $1,000</div></div>
+              <div class="b-bar"><div style="width:90%;background:#f59e0b;"></div></div>
+              <div class="b-pct" style="color:#f59e0b;">90%</div>
+            </div>
+            <div class="mock-budget-item">
+              <div class="b-icon" style="background:rgba(245,158,11,0.1);">🛒</div>
+              <div class="b-info"><div class="n">Alimentación</div><div class="s">$230 / $500</div></div>
+              <div class="b-bar"><div style="width:46%;background:#10b981;"></div></div>
+              <div class="b-pct" style="color:#10b981;">46%</div>
+            </div>
+            <div class="mock-budget-item">
+              <div class="b-icon" style="background:rgba(16,185,129,0.1);">⛽</div>
+              <div class="b-info"><div class="n">Transporte</div><div class="s">$60 / $200</div></div>
+              <div class="b-bar"><div style="width:30%;background:#10b981;"></div></div>
+              <div class="b-pct" style="color:#10b981;">30%</div>
+            </div>
+            <div class="mock-budget-item">
+              <div class="b-icon" style="background:rgba(236,72,153,0.1);">🎮</div>
+              <div class="b-info"><div class="n">Ocio</div><div class="s">$140 / $150</div></div>
+              <div class="b-bar"><div style="width:93%;background:#ef4444;"></div></div>
+              <div class="b-pct" style="color:#ef4444;">93%</div>
+            </div>
+            <div style="margin:0.5rem 1rem;padding:0.5rem;background:rgba(239,68,68,0.05);border:1px solid rgba(239,68,68,0.1);border-radius:8px;display:flex;align-items:center;gap:0.4rem;">
+              <span>⚠️</span>
+              <span style="font-size:0.6rem;color:var(--text-secondary);">1 presupuesto al límite. Revisa Ocio.</span>
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 5: ESTADÍSTICAS -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(139,92,246,0.1);">📈</div>
+        <div>
+          <h2>Estadísticas e Informes</h2>
+          <span class="tag tag-new">A mejorar</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Panel de análisis visual con múltiples gráficos para entender patrones de gasto y tendencias.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Gráfico de tendencia semanal</strong> (ingresos vs gastos)</li>
+            <li><span class="check">✓</span> <strong>Distribución por categorías</strong> en gráfico donut</li>
+            <li><span class="check">✓</span> <strong>Comparativa presupuesto vs real</strong> con barras agrupadas</li>
+            <li><span class="check">✓</span> <strong>Evolución mensual</strong> de ahorro acumulado</li>
+            <li><span class="check">✓</span> <strong>Top gastos</strong> del período seleccionado</li>
+            <li><span class="check">✓</span> <strong>Exportar informe</strong> en PDF con datos del mes</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">Estadísticas</h3>
+              <div style="display:flex;gap:0.3rem;margin-top:0.4rem;">
+                <div style="padding:0.2rem 0.5rem;background:#0d9488;color:white;border-radius:9999px;font-size:0.55rem;font-weight:600;">Mes</div>
+                <div style="padding:0.2rem 0.5rem;background:#f1f5f9;border-radius:9999px;font-size:0.55rem;font-weight:500;color:var(--text-muted);;">Año</div>
+              </div>
+            </div>
+            <div style="margin:0.5rem 1rem;padding:0.75rem;background:white;border:1px solid #e2e8f0;border-radius:10px;">
+              <div style="font-size:0.6rem;color:var(--text-muted);margin-bottom:0.5rem;">Gastos diarios · Mayo</div>
+              <div class="mock-bars" style="height:40px;">
+                <div style="height:20%;"></div>
+                <div style="height:35%;"></div>
+                <div style="height:15%;opacity:1;"></div>
+                <div style="height:45%;"></div>
+                <div style="height:30%;"></div>
+                <div style="height:55%;opacity:1;"></div>
+                <div style="height:25%;"></div>
+                <div style="height:40%;"></div>
+                <div style="height:18%;"></div>
+                <div style="height:50%;"></div>
+                <div style="height:35%;"></div>
+                <div style="height:28%;"></div>
+                <div style="height:42%;"></div>
+                <div style="height:22%;"></div>
+              </div>
+            </div>
+            <div style="display:flex;gap:0.3rem;padding:0.3rem 1rem;">
+              <div style="flex:1;padding:0.4rem;background:white;border:1px solid #e2e8f0;border-radius:8px;text-align:center;">
+                <div style="font-size:0.8rem;font-weight:800;">$3,200</div>
+                <div style="font-size:0.5rem;color:var(--text-muted);">Ingresos</div>
+              </div>
+              <div style="flex:1;padding:0.4rem;background:white;border:1px solid #e2e8f0;border-radius:8px;text-align:center;">
+                <div style="font-size:0.8rem;font-weight:800;color:#ef4444;">$1,485</div>
+                <div style="font-size:0.5rem;color:var(--text-muted);">Gastos</div>
+              </div>
+              <div style="flex:1;padding:0.4rem;background:white;border:1px solid #e2e8f0;border-radius:8px;text-align:center;">
+                <div style="font-size:0.8rem;font-weight:800;color:#10b981;">$1,715</div>
+                <div style="font-size:0.5rem;color:var(--text-muted);">Ahorro</div>
+              </div>
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item active"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 6: ESCANEO TICKETS -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(236,72,153,0.1);">📸</div>
+        <div>
+          <h2>Escanear Ticket (Nuevo)</h2>
+          <span class="tag tag-new">Por implementar</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>El usuario hace una foto al ticket de compra y la IA extrae automáticamente todos los datos.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>OCR inteligente</strong> reconoce texto del ticket</li>
+            <li><span class="check">✓</span> <strong>Categorización automática</strong> de cada producto</li>
+            <li><span class="check">✓</span> <strong>Detección de total</strong>, fecha, tienda y método de pago</li>
+            <li><span class="check">✓</span> <strong>Vista previa</strong> antes de guardar</li>
+            <li><span class="check">✓</span> <strong>Corrección manual</strong> si la IA se equivoca</li>
+            <li><span class="check">✓</span> <strong>Ahorro de tiempo</strong>: ticket de 20 productos categorizado en segundos</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">Escanear Ticket</h3>
+              <p style="font-size:0.6rem;color:var(--text-muted);">Foto del ticket → datos estructurados</p>
+            </div>
+            <div class="mock-camera">📷 Tocar para escanear</div>
+            <div class="mock-scan-result">
+              <div style="font-size:0.65rem;font-weight:600;margin-bottom:0.3rem;">🛒 Mercadona · 28/04/2026</div>
+              <div class="row"><span class="key">Base imponible</span><span class="val">$32.47</span></div>
+              <div class="row"><span class="key">IVA 4%</span><span class="val">$1.30</span></div>
+              <div class="row"><span class="key">IVA 10%</span><span class="val">$2.45</span></div>
+              <div class="row"><span class="key" style="font-weight:600;">Total</span><span class="val" style="font-weight:700;">$36.22</span></div>
+              <div style="margin-top:0.4rem;display:flex;flex-wrap:wrap;gap:0.2rem;">
+                <span style="font-size:0.5rem;padding:0.15rem 0.4rem;background:rgba(16,185,129,0.1);color:#059669;border-radius:9999px;">Sí, guardar ✓</span>
+                <span style="font-size:0.5rem;padding:0.15rem 0.4rem;background:#f1f5f9;color:var(--text-muted);border-radius:9999px;">Cancelar</span>
+              </div>
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 7: METAS -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(245,158,11,0.1);">🎯</div>
+        <div>
+          <h2>Metas de Ahorro (Nuevo)</h2>
+          <span class="tag tag-new">Por implementar</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>El usuario define objetivos financieros y la IA calcula el plan para alcanzarlos.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Crear meta</strong>: nombre, monto objetivo, fecha límite</li>
+            <li><span class="check">✓</span> <strong>Plan de ahorro automático</strong> generado por IA</li>
+            <li><span class="check">✓</span> <strong>Seguimiento visual</strong> con progreso hacia la meta</li>
+            <li><span class="check">✓</span> <strong>Múltiples metas</strong> simultáneas (viaje, coche, fondo de emergencia)</li>
+            <li><span class="check">✓</span> <strong>Notificaciones</strong> de hitos alcanzados</li>
+            <li><span class="check">✓</span> <strong>Simulador</strong>: "Si ahorro X más, llego Y semanas antes"</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">🎯 Mis Metas</h3>
+              <p style="font-size:0.6rem;color:var(--text-muted);">2 metas activas</p>
+            </div>
+            <div style="margin:0.3rem 1rem;padding:0.75rem;background:white;border:1px solid #e2e8f0;border-radius:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><span style="font-size:0.75rem;font-weight:700;">✈️ Viaje a Japón</span></div>
+                <span style="font-size:0.6rem;color:#10b981;font-weight:600;">45%</span>
+              </div>
+              <div style="height:6px;background:#e2e8f0;border-radius:3px;margin:0.4rem 0;overflow:hidden;">
+                <div style="width:45%;height:100%;background:linear-gradient(90deg,#0d9488,#14b8a6);border-radius:3px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--text-muted);">
+                <span>$2,250 / $5,000</span>
+                <span>Meta: dic 2026</span>
+              </div>
+            </div>
+            <div style="margin:0.3rem 1rem;padding:0.75rem;background:white;border:1px solid #e2e8f0;border-radius:12px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div><span style="font-size:0.75rem;font-weight:700;">🚗 Fondo coche</span></div>
+                <span style="font-size:0.6rem;color:#f59e0b;font-weight:600;">22%</span>
+              </div>
+              <div style="height:6px;background:#e2e8f0;border-radius:3px;margin:0.4rem 0;overflow:hidden;">
+                <div style="width:22%;height:100%;background:linear-gradient(90deg,#f59e0b,#fbbf24);border-radius:3px;"></div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--text-muted);">
+                <span>$1,100 / $5,000</span>
+                <span>Meta: jun 2027</span>
+              </div>
+            </div>
+            <div style="margin:0.5rem 1rem;padding:0.5rem;border:1px dashed #e2e8f0;border-radius:10px;text-align:center;font-size:0.7rem;color:var(--text-muted);cursor:pointer;">
+              + Crear nueva meta
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 8: FINANZAS COMPARTIDAS -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(99,102,241,0.1);">👥</div>
+        <div>
+          <h2>Finanzas Compartidas (Nuevo)</h2>
+          <span class="tag tag-new">Por implementar</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Ideal para parejas, pisos compartidos o grupos de viaje. Gestión colectiva de gastos.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Grupos</strong>: crear grupo con miembros e invitarlos</li>
+            <li><span class="check">✓</span> <strong>Gastos compartidos</strong>: dividir equitativamente o personalizado</li>
+            <li><span class="check">✓</span> <strong>Liquidación de deudas</strong>: "A le debe X a B"</li>
+            <li><span class="check">✓</span> <strong>Presupuesto grupal</strong> con límites por categoría</li>
+            <li><span class="check">✓</span> <strong>Historial</strong> de gastos del grupo filtrable</li>
+            <li><span class="check">✓</span> <strong>Notificaciones</strong> cuando alguien añade un gasto compartido</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">👥 Piso compartido</h3>
+              <div class="mock-members">
+                <div class="member" style="background:#6366f1;">A</div>
+                <div class="member" style="background:#10b981;">B</div>
+                <div class="member" style="background:#f59e0b;">C</div>
+                <div style="font-size:0.6rem;color:var(--text-muted);margin-left:0.3rem;">+3</div>
+              </div>
+            </div>
+            <div style="margin:0 1rem;padding:0.5rem;background:white;border:1px solid #e2e8f0;border-radius:10px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.65rem;">
+                <span>Gasto del mes</span>
+                <span style="font-weight:700;">$1,240.50</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--text-muted);margin-top:0.3rem;">
+                <span>😀 Ana pagó $480</span>
+                <span>😀 Bob pagó $320</span>
+                <span>😀 Carlos pagó $440</span>
+              </div>
+            </div>
+            <div class="mock-list" style="padding-top:0.3rem;">
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(99,102,241,0.1);">🏠</div>
+                <div class="l-info"><div class="t">Alquiler mayo</div><div class="m">Pagó Ana · Vivienda</div></div>
+                <div class="l-amount" style="color:#ef4444;">-$900</div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(16,185,129,0.1);">💡</div>
+                <div class="l-info"><div class="t">Luz</div><div class="m">Dividido 3 · Servicios</div></div>
+                <div class="l-amount" style="color:#ef4444;">-$85</div>
+              </div>
+              <div class="mock-list-item">
+                <div class="l-icon" style="background:rgba(245,158,11,0.1);">🛒</div>
+                <div class="l-info"><div class="t">Compra semanal</div><div class="m">Pagó Carlos · Comida</div></div>
+                <div class="l-amount" style="color:#ef4444;">-$120</div>
+              </div>
+            </div>
+            <div style="margin:0.3rem 1rem;padding:0.4rem 0.6rem;background:rgba(16,185,129,0.06);border:1px solid rgba(16,185,129,0.1);border-radius:8px;font-size:0.6rem;">
+              💰 <strong>Liquidaciones:</strong> Ana debe $15 a Bob
+            </div>
+            <div class="mock-nav">
+              <div class="mock-nav-item"><span class="n-icon">🏠</span>Inicio</div>
+              <div class="mock-nav-item"><span class="n-icon">📊</span>Stats</div>
+              <div class="mock-nav-item"><span class="n-icon">💳</span>Movimientos</div>
+              <div class="mock-nav-item"><span class="n-icon">👤</span>Perfil</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 9: CALENDARIO -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(13,148,136,0.1);">📅</div>
+        <div>
+          <h2>Calendario Financiero (Nuevo)</h2>
+          <span class="tag tag-new">Por implementar</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Vista mensual con todos los movimientos, suscripciones y pagos recurrentes marcados en el calendario.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Vista mensual</strong> con gastos/ingresos por día</li>
+            <li><span class="check">✓</span> <strong>Suscripciones recurrentes</strong> marcadas automáticamente</li>
+            <li><span class="check">✓</span> <strong>Recordatorios</strong> de pagos próximos</li>
+            <li><span class="check">✓</span> <strong>Saldo proyectado</strong> a fin de mes</li>
+            <li><span class="check">✓</span> <strong>Días sin gasto</strong> destacados positivamente</li>
+            <li><span class="check">✓</span> <strong>Click en día</strong> para ver detalle de transacciones</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.5rem 1rem;">
+              <span style="font-size:0.7rem;">◀</span>
+              <h3 style="font-size:0.85rem;font-weight:700;">Mayo 2026</h3>
+              <span style="font-size:0.7rem;">▶</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.2rem;padding:0.3rem 1rem;font-size:0.55rem;color:var(--text-muted);text-align:center;">
+              <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.2rem;padding:0.2rem 1rem;font-size:0.65rem;text-align:center;">
+              <span style="color:var(--text-muted);">28</span>
+              <span style="color:var(--text-muted);">29</span>
+              <span style="color:var(--text-muted);">30</span>
+              <span>1</span>
+              <span>2</span>
+              <span>3</span>
+              <span>4</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.2rem;padding:0.2rem 1rem;font-size:0.65rem;text-align:center;">
+              <span>5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span>9</span>
+              <span>10</span>
+              <span>11</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.2rem;padding:0.2rem 1rem;font-size:0.65rem;text-align:center;">
+              <span>12</span>
+              <span>13</span>
+              <span>14</span>
+              <span>15</span>
+              <span>16</span>
+              <span>17</span>
+              <span>18</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.2rem;padding:0.2rem 1rem;font-size:0.65rem;text-align:center;">
+              <span>19</span>
+              <span>20</span>
+              <span>21</span>
+              <span>22</span>
+              <span>23</span>
+              <span>24</span>
+              <span>25</span>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:0.2rem;padding:0.2rem 1rem;font-size:0.65rem;text-align:center;">
+              <span style="position:relative;">26<span style="position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#ef4444;"></span></span>
+              <span style="position:relative;">27<span style="position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#ef4444;"></span></span>
+              <span style="position:relative;">28<span style="position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#10b981;"></span></span>
+              <span style="position:relative;font-weight:700;color:white;background:#0d9488;border-radius:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin:auto;">29</span>
+              <span>30</span>
+              <span style="color:var(--text-muted);">31</span>
+              <span style="color:var(--text-muted);">1</span>
+            </div>
+            <div style="margin:0.5rem 1rem;padding:0.5rem;background:#f1f5f9;border-radius:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.6rem;">
+                <span>📅 Hoy · Alquiler -$900</span>
+                <span style="color:#0d9488;font-weight:600;">+$2,847</span>
+              </div>
+              <div style="font-size:0.55rem;color:var(--text-muted);margin-top:0.2rem;">🔔 Próximo: Netflix -$15.99 · 3 jun</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 10: CONEXIÓN BANCARIA -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(13,148,136,0.1);">🏦</div>
+        <div>
+          <h2>Conexión Bancaria</h2>
+          <span class="tag tag-now">Simulado</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Conecta con tu banco para importar transacciones automáticamente. Actualmente simulado, preparado para integración real (Plaid/Tink).</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Selección de banco</strong> entre múltiples entidades</li>
+            <li><span class="check">✓</span> <strong>Conexión segura</strong> con cifrado simulado TLS 1.3</li>
+            <li><span class="check">✓</span> <strong>Importación automática</strong> de transacciones de los últimos 3 meses</li>
+            <li><span class="check">✓</span> <strong>Detección de nómina</strong> para ajustar ingreso mensual</li>
+            <li><span class="check">✓</span> <strong>Sincronización programable</strong> (diaria/semanal)</li>
+            <li><span class="check">✓</span> <strong>Desconexión segura</strong> en un clic</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">Conectar banco</h3>
+              <p style="font-size:0.6rem;color:var(--text-muted);">Importa tus transacciones automáticamente</p>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.3rem;padding:0.3rem 1rem;">
+              <div style="padding:0.5rem;background:white;border:1px solid #e2e8f0;border-radius:8px;text-align:center;font-size:0.65rem;font-weight:500;">🏦 BBVA</div>
+              <div style="padding:0.5rem;background:white;border:1px solid #e2e8f0;border-radius:8px;text-align:center;font-size:0.65rem;font-weight:500;">🏦 Santander</div>
+              <div style="padding:0.5rem;background:white;border:1px solid #e2e8f0;border-radius:8px;text-align:center;font-size:0.65rem;font-weight:500;">🏦 CaixaBank</div>
+              <div style="padding:0.5rem;background:white;border:1px solid #0d9488;border-radius:8px;text-align:center;font-size:0.65rem;font-weight:600;color:#0d9488;">🏦 ING</div>
+            </div>
+            <div style="margin:0.5rem 1rem;padding:0.5rem;background:white;border:1px solid #e2e8f0;border-radius:10px;">
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span style="font-size:1rem;">🏦</span>
+                <div style="flex:1;">
+                  <div style="font-size:0.7rem;font-weight:600;">ING · Cuenta conectada</div>
+                  <div style="font-size:0.6rem;color:var(--text-muted);">ES12 **** **** 3456</div>
+                </div>
+                <div style="font-size:0.6rem;color:#10b981;font-weight:600;">● Conectado</div>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:0.6rem;color:var(--text-muted);margin-top:0.4rem;padding-top:0.4rem;border-top:1px solid #f1f5f9;">
+                <span>Última sincronización: Hoy 09:30</span>
+                <span style="color:#0d9488;">Sincronizar</span>
+              </div>
+            </div>
+            <div style="margin:0 1rem;font-size:0.55rem;color:var(--text-muted);text-align:center;">
+              🔒 Conexión cifrada de extremo a extremo
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEATURE 11: AJUSTES -->
+    <div class="feature">
+      <div class="feature-header">
+        <div class="feature-icon" style="background:rgba(100,116,139,0.1);">⚙️</div>
+        <div>
+          <h2>Ajustes y Configuración</h2>
+          <span class="tag tag-now">Implementado</span>
+        </div>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          <p>Panel de configuración completa para personalizar la experiencia y gestionar datos.</p>
+          <ul>
+            <li><span class="check">✓</span> <strong>Información financiera</strong>: ingreso mensual, moneda (EUR/USD/GBP/MXN), período</li>
+            <li><span class="check">✓</span> <strong>Personalidad de IA</strong>: Balanceada / Ahorro Agresivo / Flexible</li>
+            <li><span class="check">✓</span> <strong>Apariencia</strong>: tema claro/oscuro con toggle</li>
+            <li><span class="check">✓</span> <strong>Datos</strong>: exportar/importar JSON, reseteo completo</li>
+            <li><span class="check">✓</span> <strong>Perfil</strong>: nombre, email, avatar, cambio de contraseña</li>
+            <li><span class="check">✓</span> <strong>Notificaciones</strong>: alertas de presupuesto, recordatorios, informes semanales</li>
+          </ul>
+        </div>
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="mock-status"><span>9:41</span><span>🔋 86%</span></div>
+            <div style="padding:0.5rem 1rem;">
+              <h3 style="font-size:0.85rem;font-weight:700;">⚙️ Ajustes</h3>
+            </div>
+            <div class="mock-settings-item">
+              <div class="s-left">
+                <div class="s-icon" style="background:rgba(13,148,136,0.1);">💰</div>
+                <div><div class="s-label">Ingreso mensual</div><div class="s-value">$3,000.00</div></div>
+              </div>
+              <span style="font-size:0.65rem;color:var(--brand);">Editar</span>
+            </div>
+            <div class="mock-settings-item">
+              <div class="s-left">
+                <div class="s-icon" style="background:rgba(13,148,136,0.1);">💱</div>
+                <div><div class="s-label">Moneda</div><div class="s-value">USD · Dólar</div></div>
+              </div>
+              <span style="font-size:0.65rem;color:var(--text-muted);">▾</span>
+            </div>
+            <div class="mock-settings-item">
+              <div class="s-left">
+                <div class="s-icon" style="background:rgba(99,102,241,0.1);">🧠</div>
+                <div><div class="s-label">Personalidad IA</div><div class="s-value">Balanceada</div></div>
+              </div>
+              <span style="font-size:0.65rem;color:var(--text-muted);">▾</span>
+            </div>
+            <div class="mock-settings-item">
+              <div class="s-left">
+                <div class="s-icon" style="background:rgba(245,158,11,0.1);">🌙</div>
+                <div><div class="s-label">Modo oscuro</div><div class="s-value">Activado</div></div>
+              </div>
+              <div class="mock-toggle"></div>
+            </div>
+            <div class="mock-settings-item">
+              <div class="s-left">
+                <div class="s-icon" style="background:rgba(16,185,129,0.1);">🔔</div>
+                <div><div class="s-label">Notificaciones</div><div class="s-value">Alertas presupuesto ON</div></div>
+              </div>
+              <span style="font-size:0.65rem;color:var(--text-muted);">▸</span>
+            </div>
+            <div class="mock-settings-item">
+              <div class="s-left">
+                <div class="s-icon" style="background:#f1f5f9;color:var(--text-muted);">📤</div>
+                <div><div class="s-label">Exportar / Importar datos</div></div>
+              </div>
+              <span style="font-size:0.65rem;color:var(--text-muted);">▸</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div style="text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:0.85rem;">
+      <p style="font-size:1.5rem;font-weight:800;color:var(--text);margin-bottom:0.5rem;">BudgetIQ</p>
+      <p>Documentación visual de producto — 11 funcionalidades documentadas</p>
+      <p style="margin-top:0.5rem;">⚡ = Implementado  ·  🚀 = Por implementar</p>
+    </div>
+
+  </div>
+</body>
+</html>

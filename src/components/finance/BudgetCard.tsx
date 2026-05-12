@@ -41,7 +41,7 @@ export default function BudgetCard({ budget, currency, onEdit }: Props) {
         <div className="flex items-center gap-2">
           <Badge variant={badgeVariant}>{pct.toFixed(0)}%</Badge>
           {onEdit && (
-            <button onClick={() => onEdit(budget)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-surface-lighter rounded-lg text-text-muted hover:text-white">
+            <button onClick={() => onEdit(budget)} className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 hover:bg-surface-lighter rounded-lg text-text-muted hover:text-text-primary">
               <Pencil size={14} />
             </button>
           )}

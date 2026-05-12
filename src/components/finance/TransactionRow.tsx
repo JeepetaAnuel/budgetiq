@@ -1,19 +1,27 @@
 import { motion } from 'framer-motion'
-import { Trash2, ArrowUpRight, ArrowDownRight } from 'lucide-react'
+import { Trash2, Pencil, ArrowUpRight, ArrowDownRight } from 'lucide-react'
 import type { Transaction } from '../../types'
 import { getCategory } from '../../data/categories'
 import { fmt, shortDate } from '../../lib/utils'
 import { useApp } from '../../store/AppContext'
+import { useToast } from '../../store/ToastContext'
 import Icon from '../ui/Icon'
 
 interface Props {
   transaction: Transaction
+  onEdit?: (t: Transaction) => void
 }
 
-export default function TransactionRow({ transaction }: Props) {
+export default function TransactionRow({ transaction, onEdit }: Props) {
   const { deleteTransaction, state } = useApp()
+  const { toast } = useToast()
   const cat = getCategory(transaction.category)
   const isIncome = transaction.type === 'income'
+
+  const handleDelete = () => {
+    deleteTransaction(transaction.id)
+    toast({ type: 'info', title: 'Transacción eliminada' })
+  }
 
   return (
     <motion.div
@@ -40,12 +48,20 @@ export default function TransactionRow({ transaction }: Props) {
         <p className="text-xs text-text-muted mt-0.5">{shortDate(transaction.date)}</p>
       </div>
 
-      <div className="flex items-center gap-3">
-        <span className={`text-sm font-bold ${isIncome ? 'text-success' : ''}`}>
+      <div className="flex items-center gap-1">
+        <span className={`text-sm font-bold mr-2 ${isIncome ? 'text-success' : ''}`}>
           {isIncome ? '+' : '-'}{fmt(transaction.amount, state.preferences.currency)}
         </span>
+        {onEdit && (
+          <button
+            onClick={() => onEdit(transaction)}
+            className="p-2 opacity-0 group-hover:opacity-100 transition-all text-text-muted hover:text-brand-400 hover:bg-brand-500/10 rounded-lg"
+          >
+            <Pencil size={14} />
+          </button>
+        )}
         <button
-          onClick={() => deleteTransaction(transaction.id)}
+          onClick={handleDelete}
           className="p-2 opacity-0 group-hover:opacity-100 transition-all text-text-muted hover:text-danger hover:bg-danger/10 rounded-lg"
         >
           <Trash2 size={14} />

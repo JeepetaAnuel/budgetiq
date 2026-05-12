@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetIQ — Próximas Features</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --surface-light: #334155;
+      --border: #1e293b;
+      --text: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --brand: #6366f1;
+      --brand-light: #818cf8;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow: hidden;
+      height: 100vh;
+    }
+
+    .presentation {
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 6rem;
+      opacity: 0;
+      transform: translateX(60px);
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+    }
+
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0);
+      pointer-events: auto;
+    }
+
+    .slide.exit {
+      opacity: 0;
+      transform: translateX(-60px);
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      z-index: 100;
+      background: var(--surface);
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      border: 1px solid var(--border);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    .nav button {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 0.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .nav button:hover { color: white; background: var(--surface-light); }
+
+    .dots {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .dot.active { background: var(--brand); width: 24px; border-radius: 4px; }
+
+    .slide-number {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      min-width: 3rem;
+      text-align: center;
+    }
+
+    /* Keyboard hint */
+    .hint {
+      position: fixed;
+      bottom: 6rem;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      z-index: 50;
+      text-align: center;
+    }
+
+    /* Slide content styles */
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+
+    .tag-brand { background: rgba(99,102,241,0.12); color: var(--brand-light); border: 1px solid rgba(99,102,241,0.2); }
+    .tag-success { background: rgba(16,185,129,0.12); color: var(--success); border: 1px solid rgba(16,185,129,0.2); }
+    .tag-warning { background: rgba(245,158,11,0.12); color: var(--warning); border: 1px solid rgba(245,158,11,0.2); }
+    .tag-danger { background: rgba(239,68,68,0.12); color: var(--danger); border: 1px solid rgba(239,68,68,0.2); }
+
+    h1 {
+      font-size: 4rem;
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.03em;
+      margin-bottom: 1rem;
+    }
+
+    h1 .highlight { background: linear-gradient(135deg, var(--brand-light), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+    h2 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.75rem;
+    }
+
+    p {
+      font-size: 1.15rem;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      max-width: 600px;
+    }
+
+    .subtitle {
+      font-size: 1.25rem;
+      color: var(--text-secondary);
+      margin-top: 0.5rem;
+    }
+
+    /* Feature grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+      max-width: 900px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      transition: all 0.2s;
+    }
+
+    .card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-2px); }
+
+    .card .icon {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+    .card p { font-size: 0.85rem; color: var(--text-muted); max-width: none; }
+
+    /* Roadmap */
+    .roadmap {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-width: 700px;
+      margin-top: 2rem;
+    }
+
+    .roadmap-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      transition: all 0.2s;
+    }
+
+    .roadmap-item:hover { border-color: rgba(99,102,241,0.3); }
+
+    .roadmap-marker {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .marker-done { background: rgba(16,185,129,0.15); color: var(--success); }
+    .marker-next { background: rgba(99,102,241,0.15); color: var(--brand-light); }
+    .marker-future { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+
+    .roadmap-item h4 { font-size: 0.95rem; font-weight: 600; }
+    .roadmap-item p { font-size: 0.8rem; color: var(--text-muted); max-width: none; }
+
+    /* Comparison table */
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      max-width: 800px;
+      margin-top: 2rem;
+    }
+
+    .compare-col {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+    }
+
+    .compare-col h3 { font-size: 1.1rem; margin-bottom: 1rem; text-align: center; }
+    .compare-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+    .compare-col li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      background: rgba(255,255,255,0.03);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .bg-manual { border-color: rgba(245,158,11,0.2); }
+    .bg-manual h3 { color: var(--warning); }
+    .bg-ia { border-color: rgba(99,102,241,0.2); }
+    .bg-ia h3 { color: var(--brand-light); }
+
+    .check { color: var(--success); }
+    .arrow { color: var(--brand-light); }
+
+    /* Mockup section */
+    .mockup-row {
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 2rem;
+      max-width: 900px;
+    }
+
+    .mockup {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 1rem;
+      padding: 1.5rem;
+      min-height: 200px;
+    }
+
+    .mockup-bar {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .mockup-bar span {
+      width: 0.6rem;
+      height: 0.6rem;
+      border-radius: 50%;
+    }
+
+    .mockup-line {
+      height: 0.6rem;
+      border-radius: 9999px;
+      background: var(--surface-light);
+      margin-bottom: 0.6rem;
+    }
+
+    .mockup-line.short { width: 60%; }
+    .mockup-line.med { width: 80%; }
+
+    @media (max-width: 768px) {
+      .slide { padding: 2rem; }
+      h1 { font-size: 2.5rem; }
+      h2 { font-size: 1.8rem; }
+      .grid { grid-template-columns: 1fr; }
+      .compare { grid-template-columns: 1fr; }
+      .mockup-row { flex-direction: column; }
+      .nav { gap: 0.5rem; padding: 0.5rem 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="presentation" id="app">
+    <!-- SLIDE 1: TITLE -->
+    <div class="slide active" data-index="0">
+      <span class="tag tag-brand">Vision &middot; 2026</span>
+      <h1>BudgetIQ <span class="highlight">2.0</span></h1>
+      <p class="subtitle">De una herramienta local a una plataforma financiera inteligente.<br>Esto es lo que puede llegar a ser.</p>
+      <div style="margin-top: 2rem; display: flex; gap: 0.75rem;">
+        <span style="padding: 0.4rem 1rem; border-radius: 9999px; background: var(--surface); border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary);">⬅️ &nbsp;Navega con flechas</span>
+        <span style="padding: 0.4rem 1rem; border-radius: 9999px; background: var(--surface); border: 1px solid var(--border); font-size: 0.8rem; color: var(--text-secondary);">Click en los dots</span>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: STATE OF THE APP -->
+    <div class="slide" data-index="1">
+      <span class="tag tag-success">Estado Actual</span>
+      <h2>¿Qué tiene ya BudgetIQ?</h2>
+      <p>Una base sólida. Modo manual funcional, presupuestos, dashboard con gráficos, y un motor de IA que optimiza tu dinero.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">✓</div>
+          <h3>Dashboard completo</h3>
+          <p>Health score, gastos diarios, tendencias semanales, insights automáticos.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">IA</div>
+          <h3>Optimizador con IA</h3>
+          <p>Genera planes de distribución según tu personalidad financiera (balanceada, agresiva, flexible).</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(245,158,11,0.12); color: var(--warning);">€</div>
+          <h3>Presupuestos + Conexión bancaria</h3>
+          <p>Gestión de límites por categoría, simulación de conexión con entidades.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(139,92,246,0.12); color: #a78bfa;">↻</div>
+          <h3>Multi-moneda + Tema claro/oscuro</h3>
+          <p>Soporte para EUR, USD, GBP, MXN. Toggle entre modos con transición suave.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: REGISTRO Y LOGIN -->
+    <div class="slide" data-index="2">
+      <span class="tag tag-warning">Por implementar</span>
+      <h2>🔐 Autenticación & Multi-usuario</h2>
+      <p>El salto de app local a plataforma. Cada usuario con sus datos, sincronizados en la nube.</p>
+      <div class="grid" style="max-width: 600px;">
+        <div class="card">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">1</div>
+          <h3>Registro / Login</h3>
+          <p>Email + contraseña, Google OAuth, Apple ID. Recuperación de cuenta y verificación 2FA.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">2</div>
+          <h3>Perfiles multi-usuario</h3>
+          <p>Familiar, pareja, autónomo. Cada perfil con sus propios datos financieros y preferencias.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">3</div>
+          <h3>Sincronización cloud</h3>
+          <p>Datos en tiempo real entre dispositivos. Respaldos automáticos. Sin perder nada al cambiar de navegador.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">4</div>
+          <h3>Roles y permisos</h3>
+          <p>Admin, editor, solo lectura. Ideal para finanzas compartidas o asesores financieros.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: MODO MANUAL vs MODO IA -->
+    <div class="slide" data-index="3">
+      <span class="tag tag-brand">Core Experience</span>
+      <h2>⚡ Modo Manual vs Modo IA</h2>
+      <p>Dos formas de usar BudgetIQ. Cada una optimizada para distintos perfiles de usuario.</p>
+      <div class="compare">
+        <div class="compare-col bg-manual">
+          <h3>🖐️ Modo Manual</h3>
+          <ul>
+            <li><span class="check">✓</span> Control total sobre cada transacción</li>
+            <li><span class="check">✓</span> Añadir gastos/ingresos uno a uno</li>
+            <li><span class="check">✓</span> Ajuste fino de presupuestos</li>
+            <li><span class="check">✓</span> Ideal para usuarios meticulosos</li>
+            <li><span class="check">✓</span> Importación CSV bancaria</li>
+            <li><span class="check">✓</span> Categorización manual</li>
+          </ul>
+        </div>
+        <div class="compare-col bg-ia">
+          <h3>🤖 Modo IA (Automático)</h3>
+          <ul>
+            <li><span class="arrow">→</span> Conexión bancaria automática</li>
+            <li><span class="arrow">→</span> Categorización inteligente de gastos</li>
+            <li><span class="arrow">→</span> Detección de patrones y anomalías</li>
+            <li><span class="arrow">→</span> Plan de ahorro personalizado</li>
+            <li><span class="arrow">→</span> Alertas predictivas de gasto</li>
+            <li><span class="arrow">→</span> Recomendaciones semanales</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top: 1.5rem; font-size: 0.9rem; color: var(--text-muted);">💡 El usuario puede alternar entre ambos modos según lo que necesite en cada momento.</p>
+    </div>
+
+    <!-- SLIDE 5: PROFESIONALIZAR MODO IA -->
+    <div class="slide" data-index="4">
+      <span class="tag tag-brand">Mejora Prioritaria</span>
+      <h2>🧠 Llevar el Modo IA al siguiente nivel</h2>
+      <p>El motor de IA actual es funcional pero puede ser mucho más potente y visual.</p>
+      <div class="grid">
+        <div class="card" style="border-color: rgba(99,102,241,0.3);">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">📊</div>
+          <h3>Chat financiero interactivo</h3>
+          <p>"¿Cuánto he gastado en ocio este mes?" "Recomiéndame cómo ahorrar 200€". Respuestas en lenguaje natural.</p>
+        </div>
+        <div class="card" style="border-color: rgba(99,102,241,0.3);">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">🎯</div>
+          <h3>Metas inteligentes</h3>
+          <p>"Quiero ahorrar 5000€ en 6 meses para un viaje." La IA calcula el plan, hace seguimiento y te motiva.</p>
+        </div>
+        <div class="card" style="border-color: rgba(99,102,241,0.3);">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">🔮</div>
+          <h3>Predicciones & Escenarios</h3>
+          <p>"Si reduzco delivery un 30%, ¿cuánto ahorraré en 3 meses?" Simulación de escenarios financieros.</p>
+        </div>
+        <div class="card" style="border-color: rgba(99,102,241,0.3);">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">📱</div>
+          <h3>Notificaciones proactivas</h3>
+          <p>"Has gastado un 20% más que la semana pasada." "Te quedan 50€ en tu presupuesto de ocio." Alertas contextuales.</p>
+        </div>
+        <div class="card" style="border-color: rgba(99,102,241,0.3);">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">📈</div>
+          <h3>Informes periódicos IA</h3>
+          <p>Resumen semanal/mensual generado por IA con insights, logros, áreas de mejora y recomendaciones.</p>
+        </div>
+        <div class="card" style="border-color: rgba(99,102,241,0.3);">
+          <div class="icon" style="background: rgba(99,102,241,0.12); color: var(--brand-light);">🏆</div>
+          <h3>Gamificación financiera</h3>
+          <p>Logros, rachas de ahorro, niveles. "Llevas 3 meses seguidos ahorrando más del 15%".</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: IDEAS ADICIONALES -->
+    <div class="slide" data-index="5">
+      <span class="tag tag-warning">Ideas para crecer</span>
+      <h2>🚀 Más funcionalidades clave</h2>
+      <p>Características que transformarían BudgetIQ en una plataforma financiera completa.</p>
+      <div class="grid">
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">👥</div>
+          <h3>Finanzas compartidas</h3>
+          <p>Gastos de pareja, piso compartido. Divide gastos, liquida deudas, sincroniza presupuestos.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">📸</div>
+          <h3>Escaneo de tickets</h3>
+          <p>FOTO del ticket → IA extrae productos, precios y categoriza automáticamente.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">📅</div>
+          <h3>Calendario financiero</h3>
+          <p>Vista mensual de ingresos/gastos. Suscripciones recurrentes. Recordatorios de pago.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">💱</div>
+          <h3>Conversor + múltiples carteras</h3>
+          <p>Varias cuentas/carteras (efectivo, débito, crédito, inversiones). Conversor en tiempo real.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">📤</div>
+          <h3>Exportación avanzada</h3>
+          <p>PDF, Excel, CSV, Google Sheets. Informes listos para contabilidad o impuestos.</p>
+        </div>
+        <div class="card">
+          <div class="icon" style="background: rgba(16,185,129,0.12); color: var(--success);">🔔</div>
+          <h3>Alertas personalizables</h3>
+          <p>Notificaciones vía email, push, Telegram. Límites personalizados por categoría.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: ROADMAP -->
+    <div class="slide" data-index="6">
+      <span class="tag tag-brand">Planning</span>
+      <h2>📋 Roadmap propuesto</h2>
+      <p>De lo más inmediato a largo plazo. Priorizado por impacto técnico y de usuario.</p>
+      <div class="roadmap">
+        <div class="roadmap-item">
+          <div class="roadmap-marker marker-done">✓</div>
+          <div>
+            <h4>Fase 0 — Base actual</h4>
+            <p>Dashboard, presupuestos, transacciones, optimizador IA, tema claro/oscuro, multi-moneda.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-marker marker-next">1</div>
+          <div>
+            <h4>Fase 1 — Autenticación y nube</h4>
+            <p>Registro/login, backend con Supabase/Firebase, sincronización entre dispositivos, perfiles.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-marker marker-next">2</div>
+          <div>
+            <h4>Fase 2 — IA avanzada</h4>
+            <p>Chat financiero, predicciones, metas inteligentes, informes automáticos, gamificación.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-marker marker-future">3</div>
+          <div>
+            <h4>Fase 3 — Ecosistema</h4>
+            <p>API pública, webhooks, conectividad con bancos reales (Plaid/Tink), app móvil (React Native).</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-marker marker-future">4</div>
+          <div>
+            <h4>Fase 4 — Comunidad & Premium</h4>
+            <p>Planes de suscripción (Free / Premium), plantillas de presupuestos compartidas, challenges de ahorro.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: CIERRE -->
+    <div class="slide" data-index="7">
+      <span class="tag tag-success">El futuro es ahora</span>
+      <h1>¿Por dónde <span class="highlight">empezamos</span>?</h1>
+      <p style="font-size: 1.3rem; max-width: 500px;">BudgetIQ tiene los cimientos. Con autenticación, IA conversacional y finanzas compartidas, pasa de ser una herramienta a una plataforma.</p>
+      <div style="margin-top: 2.5rem; display: flex; gap: 1rem; align-items: center;">
+        <div style="display: flex; gap: 0.5rem;">
+          <span style="width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: rgba(99,102,241,0.12); color: var(--brand-light); display: flex; align-items: center; justify-content: center; font-weight: 700;">🔐</span>
+          <span style="width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: rgba(99,102,241,0.12); color: var(--brand-light); display: flex; align-items: center; justify-content: center; font-weight: 700;">🤖</span>
+          <span style="width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: rgba(99,102,241,0.12); color: var(--brand-light); display: flex; align-items: center; justify-content: center; font-weight: 700;">👥</span>
+          <span style="width: 2.5rem; height: 2.5rem; border-radius: 0.75rem; background: rgba(99,102,241,0.12); color: var(--brand-light); display: flex; align-items: center; justify-content: center; font-weight: 700;">📱</span>
+        </div>
+        <span style="color: var(--text-muted); font-size: 0.85rem;">Auth · IA · Compartir · Móvil</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <div class="nav">
+      <button id="prevBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="dots" id="dots"></div>
+      <span class="slide-number" id="slideNumber">1 / 8</span>
+      <button id="nextBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+    <div class="hint">←  →  teclado  ·  click en dots</div>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const dotsContainer = document.getElementById('dots');
+    const slideNumber = document.getElementById('slideNumber');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    let current = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'dot' + (i === 0 ? ' active' : '');
+      dot.addEventListener('click', () => goTo(i));
+      dotsContainer.appendChild(dot);
+    });
+
+    function goTo(index) {
+      if (index < 0 || index >= slides.length) return;
+      slides.forEach(s => s.classList.remove('active', 'exit'));
+      if (index > current) slides[current].classList.add('exit');
+      else if (index < current) slides.forEach((s, i) => { if (i !== index) s.classList.add('exit'); });
+      slides[index].classList.add('active');
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === index));
+      slideNumber.textContent = `${index + 1} / ${slides.length}`;
+      current = index;
+    }
+
+    prevBtn.addEventListener('click', () => goTo(current - 1));
+    nextBtn.addEventListener('click', () => goTo(current + 1));
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    });
+
+    // Touch support
+    let touchStart = 0;
+    document.addEventListener('touchstart', e => touchStart = e.changedTouches[0].screenX);
+    document.addEventListener('touchend', e => {
+      const diff = touchStart - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 50) diff > 0 ? goTo(current + 1) : goTo(current - 1);
+    });
+  </script>
+</body>
+</html>

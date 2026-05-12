@@ -35,7 +35,7 @@ export default function Modal({ open, onClose, title, children }: Props) {
           >
             <div className="flex items-center justify-between p-5 border-b border-border">
               <h3 className="text-lg font-bold">{title}</h3>
-              <button onClick={onClose} className="p-2 hover:bg-surface-lighter rounded-xl text-text-muted hover:text-white transition-colors">
+              <button onClick={onClose} className="p-2 hover:bg-surface-lighter rounded-xl text-text-muted hover:text-text-primary transition-colors">
                 <X size={18} />
               </button>
             </div>

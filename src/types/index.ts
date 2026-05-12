@@ -47,6 +47,49 @@ export interface BankConnection {
   lastSync: string
 }
 
+export interface SavingsGoal {
+  id: string
+  name: string
+  targetAmount: number
+  currentAmount: number
+  deadline: string
+  priority: 'low' | 'medium' | 'high' | 'urgent'
+  icon: string
+}
+
+export interface SharedGroup {
+  id: string
+  name: string
+  members: string[]
+  expenses: SharedExpense[]
+}
+
+export interface SharedExpense {
+  id: string
+  description: string
+  amount: number
+  paidBy: string
+  date: string
+  category: string
+}
+
+export interface ScannedTicket {
+  id: string
+  store: string
+  date: string
+  total: number
+  items: { name: string; price: number }[]
+  category: string
+}
+
+export interface CalendarSubscription {
+  id: string
+  name: string
+  amount: number
+  day: number
+  category: string
+}
+
 export interface UserPreferences {
   currency: Currency
   period: Period
@@ -60,14 +103,23 @@ export interface AppState {
   budgets: Budget[]
   aiPlan: AIPlan | null
   preferences: UserPreferences
+  savingsGoals: SavingsGoal[]
+  sharedGroups: SharedGroup[]
+  scannedTickets: ScannedTicket[]
 }
 
 export type AppAction =
   | { type: 'ADD_TRANSACTION'; transaction: Transaction }
   | { type: 'DELETE_TRANSACTION'; id: string }
+  | { type: 'UPDATE_TRANSACTION'; transaction: Transaction }
   | { type: 'SET_BUDGET'; budget: Budget }
   | { type: 'SET_BUDGETS'; budgets: Budget[] }
   | { type: 'SET_AI_PLAN'; plan: AIPlan | null }
   | { type: 'UPDATE_PREFERENCES'; preferences: Partial<UserPreferences> }
   | { type: 'SET_BANK'; bank: BankConnection | null }
   | { type: 'LOAD_STATE'; state: AppState }
+  | { type: 'ADD_GOAL'; goal: SavingsGoal }
+  | { type: 'UPDATE_GOAL'; goal: SavingsGoal }
+  | { type: 'DELETE_GOAL'; id: string }
+  | { type: 'ADD_TICKET'; ticket: ScannedTicket }
+  | { type: 'DELETE_TICKET'; id: string }

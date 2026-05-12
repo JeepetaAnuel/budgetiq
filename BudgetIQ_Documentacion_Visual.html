@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BudgetIQ — Documentación de la Aplicación</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    line-height: 1.7;
+    font-size: 14px;
+  }
+  .page {
+    max-width: 900px;
+    margin: 40px auto;
+    background: #fff;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.08);
+    border-radius: 4px;
+    padding: 60px 70px;
+    position: relative;
+  }
+
+  /* ========== PORTADA ========== */
+  .cover {
+    text-align: center;
+    padding: 100px 40px 80px;
+    position: relative;
+    border-bottom: 3px solid #0d9488;
+    margin-bottom: 50px;
+  }
+  .cover h1 {
+    font-size: 52px;
+    font-weight: 800;
+    color: #0d9488;
+    letter-spacing: -1px;
+    margin-bottom: 8px;
+  }
+  .cover .tagline {
+    font-size: 20px;
+    color: #555;
+    font-weight: 300;
+    margin-bottom: 40px;
+  }
+  .cover .subtitle {
+    font-size: 16px;
+    color: #666;
+    margin-top: 30px;
+    font-weight: 500;
+  }
+  .cover .meta {
+    margin-top: 50px;
+    color: #888;
+    font-size: 14px;
+    line-height: 2;
+  }
+  .cover .meta strong { color: #444; }
+
+  .page-break { border: none; border-top: 2px dashed #ddd; margin: 60px 0; }
+
+  /* ========== TOC ========== */
+  .toc { margin: 50px 0 60px; }
+  .toc h2 {
+    font-size: 22px;
+    color: #0d9488;
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #0d9488;
+  }
+  .toc table { width: 100%; border-collapse: collapse; }
+  .toc td {
+    padding: 10px 8px;
+    border-bottom: 1px dotted #ddd;
+    font-size: 14px;
+  }
+  .toc .num { width: 40px; color: #0d9488; font-weight: 700; }
+  .toc .tit { font-weight: 500; color: #333; }
+  .toc .pag { text-align: right; color: #999; }
+
+  /* ========== HEADINGS ========== */
+  h2.sec-title {
+    font-size: 26px;
+    color: #0d9488;
+    margin-top: 60px;
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+  }
+  h2.sec-title .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 12px;
+    border-radius: 20px;
+    margin-left: 12px;
+    vertical-align: middle;
+    background: #d1fae5;
+    color: #065f46;
+  }
+  .sec-desc {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 30px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  h3 {
+    font-size: 18px;
+    color: #0d9488;
+    margin-top: 30px;
+    margin-bottom: 12px;
+  }
+
+  /* ========== LAYOUT ========== */
+  .feature-row {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+    margin-bottom: 40px;
+  }
+  .feature-row.reverse { flex-direction: row-reverse; }
+  .feature-text { flex: 1; }
+  .feature-text p { margin-bottom: 14px; color: #444; }
+  .feature-text ul { margin: 10px 0 14px 22px; color: #444; }
+  .feature-text li { margin-bottom: 6px; }
+
+  .steps-box {
+    background: #f9fafb;
+    border-left: 4px solid #0d9488;
+    padding: 20px 24px;
+    border-radius: 0 8px 8px 0;
+    margin: 20px 0;
+  }
+  .steps-box h4 {
+    font-size: 15px;
+    color: #0d9488;
+    margin-bottom: 12px;
+  }
+  .steps-box ol { margin-left: 20px; }
+  .steps-box li { margin-bottom: 6px; color: #444; }
+  .steps-box ul { margin-left: 20px; margin-top: 4px; }
+  .steps-box ul li { margin-bottom: 3px; }
+
+  /* ========== PHONE MOCKUP ========== */
+  .phone-mock {
+    flex-shrink: 0;
+    width: 300px;
+    background: #fff;
+    border: 2px solid #d1d5db;
+    border-radius: 36px;
+    padding: 12px 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    position: relative;
+    overflow: hidden;
+  }
+  .phone-mock .status-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 12px 8px;
+    font-size: 11px;
+    color: #666;
+    font-weight: 600;
+  }
+  .phone-mock .screen {
+    background: #f5faf9;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 500px;
+    position: relative;
+  }
+  .phone-mock .screen-inner { padding: 16px 16px 24px; }
+
+  /* Header dentro del mock */
+  .mock-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  .mock-header .logo {
+    font-weight: 800;
+    font-size: 16px;
+    color: #0d9488;
+  }
+  .mock-header .icon { color: #888; font-size: 18px; }
+
+  /* Card */
+  .mock-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    margin-bottom: 12px;
+  }
+  .mock-card.teal {
+    background: linear-gradient(135deg, #0d9488, #0f766e);
+    color: #fff;
+  }
+  .mock-card .label { font-size: 11px; opacity: 0.8; margin-bottom: 2px; }
+  .mock-card .value { font-size: 20px; font-weight: 700; }
+  .mock-card .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 0;
+  }
+
+  .badge-green { background: #d1fae5; color: #065f46; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-red { background: #fee2e2; color: #991b1b; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-orange { background: #ffedd5; color: #9a3412; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-yellow { background: #fef9c3; color: #854d0e; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .badge-purple { background: #ede9fe; color: #5b21b6; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+
+  table { margin: 16px 0; width: 100%; border-collapse: collapse; }
+  table th { background: #0d9488; color: #fff; padding: 8px 12px; text-align: left; font-weight: 600; font-size: 13px; }
+  table td { padding: 8px 12px; border-bottom: 1px solid #e5e7eb; font-size: 13px; color: #444; }
+  table tr:nth-child(even) td { background: #f9fafb; }
+
+  .mock-btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    background: #0d9488;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 14px;
+    margin-top: 8px;
+    cursor: default;
+  }
+  .mock-btn.gray { background: #e5e7eb; color: #666; }
+
+  .progress-bar {
+    height: 8px;
+    background: #e5e7eb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 6px 0;
+  }
+  .progress-bar .fill {
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s;
+  }
+  .fill.green { background: #10b981; }
+  .fill.teal { background: #0d9488; }
+  .fill.orange { background: #f59e0b; }
+  .fill.red { background: #ef4444; }
+
+  /* Actividad reciente */
+  .activity-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 13px;
+  }
+  .activity-item .left { display: flex; align-items: center; gap: 10px; }
+  .activity-item .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .activity-item .cat { color: #333; }
+  .activity-item .date { color: #aaa; font-size: 11px; }
+  .activity-item .amount { font-weight: 600; }
+  .amount.green { color: #10b981; }
+  .amount.red { color: #ef4444; }
+
+  /* Form fields */
+  .mock-field {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 10px;
+    background: #fff;
+    color: #333;
+  }
+  .mock-field::placeholder { color: #bbb; }
+
+  /* IA Pie Chart */
+  .pie-chart {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 10px auto;
+    background: conic-gradient(
+      #0d9488 0% 28%,
+      #10b981 28% 42%,
+      #34d399 42% 54%,
+      #6ee7b7 54% 66%,
+      #a7f3d0 66% 100%
+    );
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 10px; font-size: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; }
+
+  /* Plan cards */
+  .plan-cards { display: flex; gap: 8px; }
+  .plan-card {
+    flex: 1;
+    background: #fff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    font-size: 12px;
+  }
+  .plan-card.featured { border-color: #0d9488; position: relative; }
+  .plan-card .pop {
+    position: absolute;
+    top: -8px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #0d9488;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .plan-card .pname { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+  .plan-card .pprice { font-size: 18px; font-weight: 800; color: #0d9488; }
+  .plan-card .pfeatures { list-style: none; margin: 8px 0; }
+  .plan-card .pfeatures li { font-size: 11px; padding: 2px 0; color: #555; }
+
+  /* Toggle */
+  .mock-toggle {
+    display: flex; align-items: center; gap: 10px; margin: 6px 0;
+  }
+  .mock-toggle .track {
+    width: 40px; height: 22px; background: #0d9488; border-radius: 20px;
+    position: relative; cursor: default;
+  }
+  .mock-toggle .track .thumb {
+    width: 18px; height: 18px; background: #fff; border-radius: 50%;
+    position: absolute; top: 2px; right: 2px;
+  }
+  .mock-toggle .track.off { background: #d1d5db; }
+  .mock-toggle .track.off .thumb { left: 2px; }
+
+  /* Responsive */
+  @media (max-width: 760px) {
+    .page { padding: 30px 20px; margin: 10px; }
+    .feature-row { flex-direction: column !important; }
+    .phone-mock { width: 100%; max-width: 320px; margin: 0 auto; }
+  }
+  .center-mock { display: flex; justify-content: center; margin-bottom: 30px; }
+
+  .table-wrap { overflow-x: auto; margin: 20px 0; }
+  table.data {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.data th {
+    background: #0d9488;
+    color: #fff;
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+  }
+  table.data td {
+    padding: 9px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    color: #444;
+  }
+  table.data tr:nth-child(even) td { background: #f9fafb; }
+
+  .note {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    padding: 14px 18px;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #166534;
+    margin: 16px 0;
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ========== PORTADA ========== -->
+  <div class="cover">
+    <h1>BudgetIQ</h1>
+    <p class="tagline">Optimización de Dinero con Inteligencia Artificial</p>
+    <hr style="width:80px;border:2px solid #0d9488;margin:20px auto;">
+    <p class="subtitle">Documentación de la Aplicación</p>
+    <div class="meta">
+      <strong>Proyecto Final — CFGS ASIX</strong><br>
+      Administración de Sistemas Informáticos en Red<br><br>
+      <strong>Alumno:</strong> Marc Julia<br>
+      <strong>Curso:</strong> 2025–2026
+    </div>
+  </div>
+
+  <!-- ========== ÍNDICE ========== -->
+  <div class="toc">
+    <h2>Índice de Contenidos</h2>
+    <table>
+      <tr><td class="num">1</td><td class="tit">Definición de la App</td><td class="pag">3</td></tr>
+      <tr><td class="num">2</td><td class="tit">Pantalla de Inicio de Sesión y Registro</td><td class="pag">4</td></tr>
+      <tr><td class="num">3</td><td class="tit">Pantalla de Planes (Pricing)</td><td class="pag">6</td></tr>
+      <tr><td class="num">4</td><td class="tit">Dashboard / Inicio</td><td class="pag">8</td></tr>
+      <tr><td class="num">5</td><td class="tit">Modo Manual — Transacciones</td><td class="pag">10</td></tr>
+      <tr><td class="num">6</td><td class="tit">Modo IA — Optimizador Inteligente</td><td class="pag">12</td></tr>
+      <tr><td class="num">7</td><td class="tit">Presupuestos</td><td class="pag">14</td></tr>
+      <tr><td class="num">8</td><td class="tit">Estadísticas e Informes</td><td class="pag">16</td></tr>
+      <tr><td class="num">9</td><td class="tit">Escanear Ticket</td><td class="pag">18</td></tr>
+      <tr><td class="num">10</td><td class="tit">Metas de Ahorro</td><td class="pag">20</td></tr>
+      <tr><td class="num">11</td><td class="tit">Finanzas Compartidas</td><td class="pag">22</td></tr>
+      <tr><td class="num">12</td><td class="tit">Calendario Financiero</td><td class="pag">24</td></tr>
+      <tr><td class="num">13</td><td class="tit">Conexión Bancaria</td><td class="pag">26</td></tr>
+      <tr><td class="num">14</td><td class="tit">Ajustes y Configuración</td><td class="pag">28</td></tr>
+    </table>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- 1. DEFINICIÓN -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">1. Definición de la App</h2>
+  <p class="sec-desc">Visión general del proyecto BudgetIQ</p>
+
+  <p><strong>BudgetIQ</strong> es una aplicación de gestión financiera personal potenciada por inteligencia artificial. Su objetivo es ayudar a los usuarios a optimizar su dinero de dos formas: manualmente, asignando presupuestos por categoría con barras de progreso interactivas, o mediante un modo IA que genera automáticamente un plan de distribución optimizado basado en los datos del usuario.</p>
+
+  <p>La mayoría de personas no llevan un control de sus finanzas personales. BudgetIQ permite visualizar el saldo total a organizar, asignar cantidades por categoría con feedback visual inmediato (barras de progreso interactivas), y recibir recomendaciones de IA con un gráfico circular que muestra la distribución óptima.</p>
+
+  <h3>Público objetivo</h3>
+  <ul>
+    <li>Jóvenes profesionales que quieren controlar sus finanzas</li>
+    <li>Familias que necesitan gestionar presupuestos compartidos</li>
+    <li>Freelancers con ingresos variables</li>
+    <li>Personas que quieren alcanzar objetivos de ahorro</li>
+  </ul>
+
+  <h3>Valor diferencial</h3>
+  <p>BudgetIQ no solo registra gastos: analiza patrones, detecta suscripciones innecesarias, predice gastos futuros y sugiere acciones concretas de ahorro mediante IA. El plan Familiar permite hasta 5 miembros con visión global de la economía doméstica.</p>
+
+  <div class="note">
+    <strong>Arquitectura:</strong> MySQL 8.0 con 25 tablas organizadas en módulos (Usuarios, Transacciones, Normalización, Presupuestos, IA y Alertas, Sistema). La aplicación web es responsive con HTML/CSS/JS y utiliza un motor de IA con 7 tipos de análisis.
+  </div>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 2. LOGIN Y REGISTRO -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">2. Pantalla de Inicio de Sesión y Registro <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Primer paso necesario para poder usar la aplicación y disfrutar de sus ventajas.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>La pantalla de inicio de sesión presenta un diseño limpio y minimalista con el logotipo de BudgetIQ en color teal. El formulario incluye campos para correo electrónico y contraseña, un botón de inicio de sesión en color teal, y un enlace inferior para registrarse. La pantalla de registro amplía el formulario con nombre completo, correo electrónico, contraseña y confirmación de contraseña.</p>
+
+      <p>Ambas pantallas comparten el mismo estilo visual: fondo claro, tarjeta blanca con sombra, y una paleta de colores centrada en el teal corporativo.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Iniciar sesión</h4>
+        <ol>
+          <li>Abra la aplicación BudgetIQ en su navegador.</li>
+          <li>Si ya dispone de cuenta, introduzca su <strong>correo electrónico</strong> y <strong>contraseña</strong> en los campos correspondientes.</li>
+          <li>Pulse el botón <strong>"Iniciar sesión"</strong> para acceder al dashboard.</li>
+          <li>Si no recuerda su contraseña, pulse <strong>"¿Has olvidado la contraseña?"</strong> e introduzca su correo para recibir un código de restablecimiento.</li>
+        </ol>
+      </div>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Registrarse</h4>
+        <ol>
+          <li>En la pantalla de login, pulse <strong>"Registrarse"</strong>.</li>
+          <li>Complete los campos: nombre completo, correo electrónico, contraseña y confirmación de contraseña.</li>
+          <li>Pulse <strong>"Crear cuenta"</strong>.</li>
+          <li>Será redirigido a la pantalla de selección de planes para elegir su suscripción.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div style="text-align:center;margin:20px 0 24px;">
+            <div style="font-size:32px;font-weight:800;color:#0d9488;">BQ</div>
+            <div style="font-size:13px;color:#888;">BudgetIQ</div>
+          </div>
+          <input class="mock-field" type="text" placeholder="Correo electrónico" value="marc@example.com" readonly>
+          <input class="mock-field" type="password" placeholder="Contraseña" value="••••••••" readonly>
+          <div class="mock-btn">Iniciar sesión</div>
+          <div style="text-align:center;margin-top:14px;font-size:12px;color:#888;">
+            ¿No tienes cuenta? <span style="color:#0d9488;font-weight:600;">Regístrate</span>
+          </div>
+          <div style="text-align:center;margin-top:6px;font-size:11px;color:#aaa;">
+            ¿Has olvidado la contraseña?
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Pantalla de Login / Registro</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 3. PLANES (PRICING) -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">3. Pantalla de Planes (Pricing) <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Tres niveles de suscripción para adaptarse a las necesidades de cada usuario.</p>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <p>La pantalla de planes muestra tres tarjetas dispuestas horizontalmente (en desktop) o verticalmente (en móvil). El plan Premium tiene un borde destacado en teal y una etiqueta de <strong>"POPULAR"</strong>. Cada tarjeta incluye el nombre del plan, el precio mensual, una lista de características con checkmarks y un botón de selección.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Seleccionar un plan</h4>
+        <ol>
+          <li>Tras registrarse, accederá a la pantalla de planes.</li>
+          <li>Revise las características de cada plan:
+            <ul>
+              <li><strong>Gratis (0 EUR/mes):</strong> Modo manual, hasta 4 categorías, registro básico, sin IA, con anuncios.</li>
+              <li><strong>Premium (4.99 EUR/mes):</strong> Modo IA, categorías ilimitadas, análisis avanzado, sin anuncios.</li>
+              <li><strong>Familiar (7.99 EUR/mes):</strong> Hasta 5 usuarios, presupuestos compartidos, informes familiares.</li>
+            </ul>
+          </li>
+          <li>Pulse <strong>"Seleccionar plan"</strong> en la tarjeta deseada.</li>
+          <li>Si ya está suscrito, el plan actual aparecerá con un botón gris indicando <strong>"Plan actual"</strong>.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">BudgetIQ</span>
+            <span class="icon">✕</span>
+          </div>
+          <h3 style="font-size:16px;margin-bottom:12px;text-align:center;">Elige tu plan</h3>
+          <div class="plan-cards">
+            <div class="plan-card">
+              <div class="pname">Gratis</div>
+              <div class="pprice">0 €</div>
+              <div style="font-size:10px;color:#999;">/mes</div>
+              <ul class="pfeatures">
+                <li>✓ Modo manual</li>
+                <li>✓ 4 categorías</li>
+                <li>✗ Sin IA</li>
+              </ul>
+              <div class="mock-btn gray" style="font-size:11px;padding:8px;">Plan actual</div>
+            </div>
+            <div class="plan-card featured">
+              <div class="pop">POPULAR</div>
+              <div class="pname">Premium</div>
+              <div class="pprice">4.99 €</div>
+              <div style="font-size:10px;color:#999;">/mes</div>
+              <ul class="pfeatures">
+                <li>✓ Modo IA</li>
+                <li>✓ Categorías ilimitadas</li>
+                <li>✓ Sin anuncios</li>
+              </ul>
+              <div class="mock-btn" style="font-size:11px;padding:8px;">Seleccionar</div>
+            </div>
+            <div class="plan-card">
+              <div class="pname">Familiar</div>
+              <div class="pprice">7.99 €</div>
+              <div style="font-size:10px;color:#999;">/mes</div>
+              <ul class="pfeatures">
+                <li>✓ 5 usuarios</li>
+                <li>✓ Presup. compartidos</li>
+                <li>✓ Informes familiares</li>
+              </ul>
+              <div class="mock-btn" style="font-size:11px;padding:8px;">Seleccionar</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Pantalla de Planes (Pricing)</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 4. DASHBOARD -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">4. Dashboard / Inicio <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Pantalla principal con visión general de las finanzas del usuario.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>El dashboard es la pantalla principal de la aplicación. Muestra un saludo personalizado al usuario, una tarjeta de balance con el saldo total y desglose de asignado/restante, tarjetas de acción rápida (Modo Manual, Modo IA, Presupuestos) con iconos, y una lista de actividad reciente con las últimas transacciones donde los ingresos aparecen en verde y los gastos en rojo.</p>
+
+      <p>También incluye un <strong>Health Score financiero</strong> (0–100) con color según el estado, y un enlace para cambiar de plan.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Navegar el Dashboard</h4>
+        <ol>
+          <li>Al iniciar sesión, accederá automáticamente al <strong>Dashboard</strong>.</li>
+          <li>Visualice su <strong>saldo total</strong> y el desglose de asignado/restante en la tarjeta de balance.</li>
+          <li>Revise su <strong>Health Score</strong> financiero para conocer su estado general.</li>
+          <li>Use las <strong>tarjetas de acción rápida</strong> para acceder a Modo Manual, Modo IA o Presupuestos.</li>
+          <li>Consulte la <strong>actividad reciente</strong> para ver las últimas transacciones registradas.</li>
+          <li>Si lo desea, pulse <strong>"Cambiar de plan"</strong> para modificar su suscripción.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">BudgetIQ</span>
+            <span style="font-size:12px;color:#888;">👤 Cerrar sesión</span>
+          </div>
+          <p style="font-size:14px;margin-bottom:12px;">👋 ¡Hola, <strong>Marc</strong>!</p>
+
+          <div class="mock-card teal">
+            <div class="label">Saldo total</div>
+            <div class="value">$2,847.50</div>
+            <div style="display:flex;justify-content:space-between;margin-top:10px;font-size:12px;">
+              <span>Asignado: $2,450.00</span>
+              <span>Restante: $397.50</span>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <div class="mock-card" style="flex:1;text-align:center;padding:10px;">
+              <div style="font-size:20px;">✍️</div>
+              <div style="font-size:11px;color:#666;">Manual</div>
+            </div>
+            <div class="mock-card" style="flex:1;text-align:center;padding:10px;">
+              <div style="font-size:20px;">🤖</div>
+              <div style="font-size:11px;color:#666;">Modo IA</div>
+            </div>
+            <div class="mock-card" style="flex:1;text-align:center;padding:10px;">
+              <div style="font-size:20px;">📊</div>
+              <div style="font-size:11px;color:#666;">Presup.</div>
+            </div>
+          </div>
+
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+            <span style="font-weight:600;font-size:13px;">Actividad reciente</span>
+            <span style="font-size:11px;color:#0d9488;">Ver todo</span>
+          </div>
+
+          <div class="activity-item">
+            <div class="left"><span class="dot" style="background:#ef4444;"></span><span class="cat">Alquiler Mayo</span></div>
+            <span class="amount red">-$900.00</span>
+          </div>
+          <div class="activity-item">
+            <div class="left"><span class="dot" style="background:#10b981;"></span><span class="cat">Nómina Abril</span></div>
+            <span class="amount green">+$3,200.00</span>
+          </div>
+          <div class="activity-item">
+            <div class="left"><span class="dot" style="background:#ef4444;"></span><span class="cat">Mercadona</span></div>
+            <span class="amount red">-$156.30</span>
+          </div>
+          <div class="activity-item">
+            <div class="left"><span class="dot" style="background:#ef4444;"></span><span class="cat">Netflix</span></div>
+            <span class="amount red">-$15.99</span>
+          </div>
+
+          <div style="margin-top:12px;text-align:center;font-size:11px;color:#0d9488;">
+            Cambiar de plan →
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Dashboard / Inicio</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 5. MODO MANUAL -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">5. Modo Manual — Transacciones <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Control total sobre la asignación de tu presupuesto.</p>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <p>El modo manual permite al usuario introducir su saldo total y asignar manualmente cantidades a cada categoría (Alquiler, Comida, Mascotas, Ahorros, etc.) mediante inputs numéricos y barras de progreso arrastrables. El saldo restante se actualiza en tiempo real con cambio de color: verde si queda saldo disponible, rojo si se ha excedido.</p>
+
+      <p>Además, incluye filtros por tipo (ingreso/gasto) y por categoría, búsqueda por texto, ordenación por fecha/monto/categoría, y la posibilidad de editar o eliminar transacciones existentes con confirmación visual.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Añadir una transacción manual</h4>
+        <ol>
+          <li>Acceda al <strong>Modo Manual</strong> desde el dashboard.</li>
+          <li>Seleccione el <strong>tipo</strong>: Ingreso o Gasto.</li>
+          <li>Elija la <strong>categoría</strong> correspondiente (Alquiler, Comida, etc.).</li>
+          <li>Introduzca el <strong>importe</strong> en el campo numérico.</li>
+          <li>Opcionalmente, arrastre la <strong>barra de progreso</strong> para ajustar la cantidad visualmente.</li>
+          <li>El <strong>saldo restante</strong> se actualizará automáticamente (verde si ok, rojo si excedido).</li>
+          <li>Pulse <strong>"Guardar"</strong> para registrar la transacción.</li>
+        </ol>
+      </div>
+      <div class="steps-box">
+        <h4>Filtrar y ordenar transacciones</h4>
+        <ol>
+          <li>Use el filtro de <strong>tipo</strong> para ver solo ingresos o solo gastos.</li>
+          <li>Use el filtro de <strong>categoría</strong> para acotar por área.</li>
+          <li>Ordene los resultados por <strong>fecha</strong>, <strong>monto</strong> o <strong>categoría</strong> (ascendente/descendente).</li>
+          <li>Consulte el <strong>resumen</strong> con total de ingresos, gastos y número de transacciones.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">✍️ Manual</span>
+            <span style="font-size:12px;color:#0d9488;">Guardar</span>
+          </div>
+
+          <div class="mock-card teal" style="padding:12px;">
+            <div class="label">Saldo a organizar</div>
+            <div class="value" style="font-size:18px;">$3,000.00</div>
+            <div style="margin-top:6px;font-size:12px;">
+              Restante: <span style="color:#bbf7d0;font-weight:700;">$847.50</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🏠 Alquiler</span>
+              <span style="font-weight:600;font-size:13px;">$900</span>
+            </div>
+            <div class="progress-bar"><div class="fill teal" style="width:90%;"></div></div>
+            <div style="font-size:11px;color:#888;">de $1,000</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🍽️ Comida</span>
+              <span style="font-weight:600;font-size:13px;">$350</span>
+            </div>
+            <div class="progress-bar"><div class="fill green" style="width:70%;"></div></div>
+            <div style="font-size:11px;color:#888;">de $500</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🐾 Mascotas</span>
+              <span style="font-weight:600;font-size:13px;">$80</span>
+            </div>
+            <div class="progress-bar"><div class="fill green" style="width:40%;"></div></div>
+            <div style="font-size:11px;color:#888;">de $200</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">💰 Ahorros</span>
+              <span style="font-weight:600;font-size:13px;">$300</span>
+            </div>
+            <div class="progress-bar"><div class="fill orange" style="width:60%;"></div></div>
+            <div style="font-size:11px;color:#888;">de $500</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Modo Manual con barras de progreso</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 6. MODO IA -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">6. Modo IA — Optimizador Inteligente <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Planificación financiera automatizada con inteligencia artificial.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>El modo IA analiza el histórico de transacciones, los patrones de gasto y las comparativas con usuarios similares para generar un plan de distribución óptimo. El resultado se visualiza con un gráfico circular (pie chart) con los porcentajes por categoría y una lista de recomendaciones detalladas.</p>
+
+      <p>Incluye tres <strong>personalidades</strong> de IA seleccionables: Balanceada, Ahorro Agresivo y Flexible. También incorpora un <strong>chat financiero</strong> para hacer preguntas en lenguaje natural, predicciones («Si reduzco un 30% en ocio, ¿cuánto ahorro?») y una comparativa del gasto actual vs la recomendación de la IA.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Generar plan con IA</h4>
+        <ol>
+          <li>Acceda al <strong>Modo IA</strong> desde el dashboard.</li>
+          <li>Seleccione su <strong>personalidad de IA</strong>: Balanceada, Ahorro Agresivo o Flexible.</li>
+          <li>Introduzca su <strong>ingreso mensual</strong> en el campo correspondiente.</li>
+          <li>Pulse <strong>"Generar plan"</strong>.</li>
+          <li>Revise el <strong>gráfico circular</strong> con la distribución recomendada por categoría.</li>
+          <li>Lea las <strong>recomendaciones detalladas</strong> generadas por la IA.</li>
+          <li>Use el <strong>chat financiero</strong> para hacer preguntas adicionales sobre su plan.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">🤖 Modo IA</span>
+            <span style="font-size:11px;color:#888;">Balanceada ▼</span>
+          </div>
+
+          <input class="mock-field" type="text" placeholder="Ingreso mensual" value="$3,000.00" readonly>
+
+          <div class="mock-card" style="text-align:center;">
+            <div class="label">Distribución recomendada</div>
+            <div class="pie-chart"></div>
+            <div class="legend">
+              <span class="legend-item"><span class="legend-dot" style="background:#0d9488;"></span>Vivienda 28%</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#10b981;"></span>Comida 14%</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#34d399;"></span>Ahorro 12%</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#6ee7b7;"></span>Transporte 8%</span>
+              <span class="legend-item"><span class="legend-dot" style="background:#a7f3d0;"></span>Ocio 6%</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div style="font-weight:600;font-size:13px;margin-bottom:6px;">💡 Recomendaciones</div>
+            <ul style="font-size:12px;color:#555;list-style:none;padding:0;">
+              <li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">✓ Destina 28% a vivienda (máx. 30%)</li>
+              <li style="padding:4px 0;border-bottom:1px solid #f0f0f0;">✓ Ahorro recomendado: $360/mes</li>
+              <li style="padding:4px 0;">✓ Reduce ocio un 30% para ahorrar $45/mes</li>
+            </ul>
+          </div>
+
+          <div class="mock-btn" style="font-size:12px;padding:10px;">Generar nuevo plan</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Modo IA con gráfico circular y recomendaciones</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 7. PRESUPUESTOS -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">7. Presupuestos <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Control mensual de gastos por categoría con seguimiento visual.</p>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <p>La sección de presupuestos permite al usuario definir un límite de gasto mensual por categoría (vivienda, comida, ocio, etc.). Cada presupuesto se representa con una barra de progreso que cambia de color según el estado: verde (normal), naranja (en riesgo) o rojo (excedido).</p>
+
+      <p>El usuario puede crear nuevos presupuestos para categorías sin asignar, editar los límites directamente desde la tarjeta, resetear los gastos mensualmente con un clic, y recibir alertas cuando un presupuesto se acerca a su límite.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Gestionar presupuestos</h4>
+        <ol>
+          <li>Acceda a <strong>Presupuestos</strong> desde el dashboard.</li>
+          <li>Visualice el límite de cada categoría y el gasto actual en la barra de progreso.</li>
+          <li>Para <strong>editar un límite</strong>, pulse sobre la tarjeta de la categoría y ajuste el valor.</li>
+          <li>Para <strong>crear un nuevo presupuesto</strong>, pulse "Añadir presupuesto" y seleccione la categoría.</li>
+          <li>Para <strong>resetear</strong> los gastos del mes, pulse "Resetear gastos".</li>
+          <li>Las alertas le notificarán cuando alcance el 80% del límite establecido.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">📊 Presupuestos</span>
+            <span style="font-size:12px;color:#0d9488;">+ Añadir</span>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🏠 Vivienda</span>
+              <span style="font-size:12px;font-weight:600;">$900 / $1,000</span>
+            </div>
+            <div class="progress-bar"><div class="fill orange" style="width:90%;"></div></div>
+            <div style="font-size:11px;color:#9a3412;">⚠️ 90% — cerca del límite</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🍽️ Alimentación</span>
+              <span style="font-size:12px;font-weight:600;">$230 / $500</span>
+            </div>
+            <div class="progress-bar"><div class="fill green" style="width:46%;"></div></div>
+            <div style="font-size:11px;color:#888;">46% — dentro del límite</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🚗 Transporte</span>
+              <span style="font-size:12px;font-weight:600;">$60 / $200</span>
+            </div>
+            <div class="progress-bar"><div class="fill green" style="width:30%;"></div></div>
+            <div style="font-size:11px;color:#888;">30% — dentro del límite</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🎮 Ocio</span>
+              <span style="font-size:12px;font-weight:600;">$140 / $150</span>
+            </div>
+            <div class="progress-bar"><div class="fill red" style="width:93%;"></div></div>
+            <div style="font-size:11px;color:#991b1b;">🔴 93% — casi agotado</div>
+          </div>
+
+          <div style="margin-top:8px;text-align:center;font-size:11px;color:#888;">
+            Presupuesto total: $2,700.00 · Saludables: 3 de 5
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Pantalla de Presupuestos</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 8. ESTADÍSTICAS E INFORMES -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">8. Estadísticas e Informes <span class="badge">A MEJORAR</span></h2>
+  <p class="sec-desc">Visualización avanzada del rendimiento financiero con gráficos y exportación.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>La sección de estadísticas e informes ofrece una visión detallada del rendimiento financiero del usuario mediante gráficos interactivos. Incluye un gráfico de tendencia semanal que compara ingresos y gastos, un gráfico donut con la distribución por categorías, y barras agrupadas que comparan el presupuesto planificado contra el gasto real.</p>
+
+      <p>También muestra la evolución mensual del ahorro acumulado, el top de gastos del período seleccionado, y permite exportar un informe en PDF con todos los datos del mes.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Consultar estadísticas</h4>
+        <ol>
+          <li>Acceda a <strong>Estadísticas e Informes</strong> desde el menú.</li>
+          <li>Seleccione el <strong>período</strong> a analizar (semana, mes, año).</li>
+          <li>Revise el <strong>gráfico de tendencia</strong> para ver la evolución de ingresos vs gastos.</li>
+          <li>Consulte el <strong>gráfico donut</strong> para entender la distribución del gasto por categorías.</li>
+          <li>Compare el <strong>presupuesto vs real</strong> en las barras agrupadas.</li>
+          <li>Para exportar, pulse <strong>"Exportar PDF"</strong> y descargue el informe completo.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">📈 Estadísticas</span>
+            <span style="font-size:11px;color:#0d9488;">Exportar PDF</span>
+          </div>
+
+          <div class="mock-card teal" style="padding:12px;">
+            <div class="row">
+              <span>Ingresos del Mes</span>
+              <span style="font-weight:700;">$3,200.00</span>
+            </div>
+            <div class="row">
+              <span>Gastos del Mes</span>
+              <span style="font-weight:700;">$1,485.00</span>
+            </div>
+            <div class="row">
+              <span>Ahorro del Mes</span>
+              <span style="font-weight:700;color:#bbf7d0;">$1,715.00</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div style="font-weight:600;font-size:13px;margin-bottom:8px;">📊 Tendencia Semanal</div>
+            <div style="display:flex;align-items:flex-end;gap:4px;height:50px;padding:4px 0;">
+              <div style="flex:1;background:#10b981;height:30px;border-radius:4px 4px 0 0;"></div>
+              <div style="flex:1;background:#ef4444;height:20px;border-radius:4px 4px 0 0;"></div>
+              <div style="flex:1;background:#10b981;height:35px;border-radius:4px 4px 0 0;"></div>
+              <div style="flex:1;background:#ef4444;height:25px;border-radius:4px 4px 0 0;"></div>
+              <div style="flex:1;background:#10b981;height:40px;border-radius:4px 4px 0 0;"></div>
+              <div style="flex:1;background:#ef4444;height:15px;border-radius:4px 4px 0 0;"></div>
+              <div style="flex:1;background:#10b981;height:28px;border-radius:4px 4px 0 0;"></div>
+            </div>
+            <div style="display:flex;gap:14px;font-size:10px;color:#888;margin-top:4px;">
+              <span><span style="display:inline-block;width:8px;height:8px;background:#10b981;border-radius:2px;"></span> Ingresos</span>
+              <span><span style="display:inline-block;width:8px;height:8px;background:#ef4444;border-radius:2px;"></span> Gastos</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🏆 Top gasto</span>
+              <span style="font-weight:600;">Vivienda · $900</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">📂 Categorías activas</span>
+              <span style="font-weight:600;">6</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Estadísticas e Informes</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 9. ESCANEAR TICKET -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">9. Escanear Ticket <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Reconocimiento inteligente de tickets de compra mediante OCR.</p>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <p>La función de escaneo de tickets permitirá al usuario fotografiar o subir la imagen de un ticket de compra. El sistema utilizará OCR (reconocimiento óptico de caracteres) para extraer automáticamente la información: nombre de la tienda, fecha, importe total, y productos individuales.</p>
+
+      <p>Cada producto será categorizado automáticamente por la IA, y el usuario podrá corregir manualmente cualquier error antes de guardar. El ticket completo será procesado en cuestión de segundos, eliminando la necesidad de introducir gastos uno por uno.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Escanear un ticket</h4>
+        <ol>
+          <li>Acceda a <strong>Escanear Ticket</strong> desde el menú o desde el acceso rápido del dashboard.</li>
+          <li>Pulse <strong>"Subir imagen"</strong> o <strong>"Hacer foto"</strong> para capturar el ticket.</li>
+          <li>El sistema procesará la imagen con OCR y extraerá los datos automáticamente.</li>
+          <li>Revise la <strong>vista previa</strong>:
+            <ul>
+              <li>Tienda, fecha, base imponible, IVA y total</li>
+              <li>Productos detectados con su categoría asignada</li>
+            </ul>
+          </li>
+          <li>Si la IA se equivoca, corrija manualmente cualquier campo.</li>
+          <li>Pulse <strong>"Guardar"</strong> para registrar todos los productos como transacciones.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">📸 Escanear Ticket</span>
+          </div>
+
+          <div style="background:#e5e7eb;border-radius:12px;padding:40px 20px;text-align:center;margin-bottom:12px;border:2px dashed #0d9488;">
+            <div style="font-size:40px;">📄</div>
+            <div style="font-size:13px;color:#555;margin-top:8px;">Pulsa para subir imagen</div>
+            <div style="font-size:11px;color:#888;">o haz una foto al ticket</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🏪 Tienda</span>
+              <span style="font-weight:600;">Mercadona</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">📅 Fecha</span>
+              <span style="font-weight:600;">28/04/26</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">💰 Total detectado</span>
+              <span style="font-weight:600;">$36.22</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">🏷️ Categoría</span>
+              <span class="badge-green">Alimentación</span>
+            </div>
+          </div>
+
+          <div class="mock-btn" style="font-size:12px;padding:10px;">Guardar ticket</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Escanear Ticket</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 10. METAS DE AHORRO -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">10. Metas de Ahorro <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Define objetivos de ahorro personalizados y sigue tu progreso.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>La sección de metas de ahorro permite al usuario crear objetivos financieros con nombre, monto objetivo y fecha límite. La IA genera automáticamente un plan de ahorro personalizado para alcanzar cada meta, mostrando el progreso visual con barras de progreso.</p>
+
+      <p>El usuario puede tener múltiples metas simultáneas (viaje, coche, fondo de emergencia), recibir notificaciones al alcanzar hitos importantes, y usar el simulador para ver cómo ajustar el ahorro mensual afecta la fecha de cumplimiento.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Crear una meta de ahorro</h4>
+        <ol>
+          <li>Acceda a <strong>Metas de Ahorro</strong> desde el menú.</li>
+          <li>Pulse <strong>"Crear meta"</strong>.</li>
+          <li>Complete los campos:
+            <ul>
+              <li><strong>Nombre</strong> de la meta (ej: "Viaje a Japón")</li>
+              <li><strong>Monto objetivo</strong> a alcanzar</li>
+              <li><strong>Fecha límite</strong> (opcional)</li>
+              <li><strong>Prioridad</strong>: baja, media, alta o urgente</li>
+            </ul>
+          </li>
+          <li>La IA generará un <strong>plan de ahorro automático</strong> basado en sus ingresos y gastos.</li>
+          <li>Revise el progreso en tiempo real con la <strong>barra de progreso</strong>.</li>
+          <li>Use el <strong>simulador</strong> para probar diferentes escenarios de ahorro.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">🎯 Metas de Ahorro</span>
+            <span style="font-size:12px;color:#0d9488;">+ Crear</span>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">✈️ Viaje a Japón</span>
+              <span style="font-weight:600;font-size:13px;">$2,250 / $5,000</span>
+            </div>
+            <div class="progress-bar"><div class="fill teal" style="width:45%;"></div></div>
+            <div style="font-size:11px;color:#888;">45% · Dic 2026</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🚗 Fondo Coche</span>
+              <span style="font-weight:600;font-size:13px;">$1,100 / $5,000</span>
+            </div>
+            <div class="progress-bar"><div class="fill green" style="width:22%;"></div></div>
+            <div style="font-size:11px;color:#888;">22% · Jun 2027</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">💰 Fondo Emergencia</span>
+              <span style="font-weight:600;font-size:13px;">$3,000 / $6,000</span>
+            </div>
+            <div class="progress-bar"><div class="fill orange" style="width:50%;"></div></div>
+            <div style="font-size:11px;color:#888;">50% · Alta prioridad</div>
+          </div>
+
+          <div class="mock-card" style="background:#f0fdf4;">
+            <div style="font-size:12px;color:#166534;">
+              💡 <strong>Simulador:</strong> Si ahorras $50/mes extra, llegas 3 semanas antes
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Metas de Ahorro</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 11. FINANZAS COMPARTIDAS -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">11. Finanzas Compartidas <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Gestión de gastos en grupo con división equitativa y liquidación de deudas.</p>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <p>La sección de finanzas compartidas permitirá a los usuarios crear grupos e invitar a otros miembros para gestionar gastos colectivos. Los gastos del grupo pueden dividirse equitativamente o de forma personalizada, y el sistema calculará automáticamente las deudas entre los miembros («A le debe X a B»).</p>
+
+      <p>Incluye un presupuesto grupal con límites por categoría, un historial de gastos del grupo filtrable, y notificaciones cuando alguien añade un nuevo gasto compartido. Es ideal para pisos compartidos, viajes en grupo o gastos familiares.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Gestionar finanzas compartidas</h4>
+        <ol>
+          <li>Acceda a <strong>Finanzas Compartidas</strong> desde el menú.</li>
+          <li>Para crear un grupo, pulse <strong>"Nuevo grupo"</strong>, asígnele un nombre e invite a miembros.</li>
+          <li>Para añadir un gasto compartido:
+            <ul>
+              <li>Pulse <strong>"Añadir gasto"</strong>.</li>
+              <li>Introduzca el importe, categoría y quien pagó.</li>
+              <li>Seleccione cómo dividir: equitativamente o personalizado.</li>
+            </ul>
+          </li>
+          <li>Consulte la sección <strong>Liquidaciones</strong> para ver quién debe a quién.</li>
+          <li>Use el <strong>presupuesto grupal</strong> para establecer límites por categoría.</li>
+          <li>Las <strong>notificaciones</strong> le avisarán de nuevos gastos y cambios en el grupo.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">👥 Finanzas Compartidas</span>
+          </div>
+
+          <div class="mock-card" style="border:2px solid #0d9488;">
+            <div style="font-weight:600;font-size:14px;">🏠 Piso Centro</div>
+            <div style="font-size:12px;color:#888;">Ana · Bob · Carlos · Tú</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">Gasto del mes</span>
+              <span style="font-weight:600;">$1,240.50</span>
+            </div>
+            <div class="row">
+              <span style="font-size:12px;color:#555;">Ana pagó</span>
+              <span style="font-weight:600;">$480.00</span>
+            </div>
+            <div class="row">
+              <span style="font-size:12px;color:#555;">Bob pagó</span>
+              <span style="font-weight:600;">$320.00</span>
+            </div>
+            <div class="row">
+              <span style="font-size:12px;color:#555;">Carlos pagó</span>
+              <span style="font-weight:600;">$440.00</span>
+            </div>
+          </div>
+
+          <div class="mock-card" style="background:#fef2f2;">
+            <div style="font-size:12px;color:#991b1b;">
+              💸 <strong>Deuda pendiente:</strong> Ana debe $15 a Bob
+            </div>
+          </div>
+
+          <div class="mock-btn" style="font-size:12px;padding:10px;">Añadir gasto compartido</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Finanzas Compartidas</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 12. CALENDARIO FINANCIERO -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">12. Calendario Financiero <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Visualiza tus finanzas en una vista de calendario mensual.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>El calendario financiero muestra una vista mensual con todos los gastos e ingresos representados por día. Las suscripciones recurrentes se marcan automáticamente, y el sistema muestra recordatorios de pagos próximos para evitar olvidos.</p>
+
+      <p>Incluye una proyección del saldo a fin de mes, días sin gasto destacados positivamente para motivar al usuario, y la posibilidad de hacer clic en cualquier día para ver el detalle de las transacciones de esa fecha.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Usar el Calendario Financiero</h4>
+        <ol>
+          <li>Acceda a <strong>Calendario Financiero</strong> desde el menú.</li>
+          <li>Navegue entre los meses usando las flechas izquierda/derecha.</li>
+          <li>Los días con <strong>gastos</strong> aparecen en rojo, los días con <strong>ingresos</strong> en verde.</li>
+          <li>Las <strong>suscripciones</strong> recurrentes tienen un icono especial 🔄.</li>
+          <li>Pulse sobre un <strong>día concreto</strong> para ver el detalle de las transacciones de esa fecha.</li>
+          <li>Consulte la <strong>proyección a fin de mes</strong> para planificar sus próximos gastos.</li>
+          <li>Los <strong>días sin gasto</strong> se muestran con un distintivo positivo para celebrar el ahorro.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">📅 Calendario</span>
+            <span style="font-size:12px;color:#888;">Mayo 2026</span>
+          </div>
+
+          <div class="mock-card">
+            <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:2px;text-align:center;font-size:10px;">
+              <span style="color:#888;">Lu</span><span style="color:#888;">Ma</span><span style="color:#888;">Mi</span><span style="color:#888;">Ju</span><span style="color:#888;">Vi</span><span style="color:#888;">Sá</span><span style="color:#888;">Do</span>
+              <span></span><span></span><span></span><span></span>
+              <span style="background:#fee2e2;border-radius:50%;padding:2px;font-weight:600;">1</span>
+              <span>2</span>
+              <span style="background:#10b981;color:#fff;border-radius:50%;padding:2px;">3</span>
+              <span>4</span>
+              <span style="background:#fee2e2;border-radius:50%;padding:2px;">5</span>
+              <span>6</span>
+              <span>7</span>
+              <span>8</span>
+              <span style="background:#fef9c3;border-radius:50%;padding:2px;">9</span>
+              <span>10</span>
+              <span>11</span>
+              <span>12</span>
+              <span>13</span>
+              <span>14</span>
+              <span>15</span>
+              <span>16</span>
+              <span>17</span>
+              <span>18</span>
+              <span>19</span>
+              <span>20</span>
+              <span>21</span>
+              <span>22</span>
+              <span>23</span>
+              <span>24</span>
+              <span>25</span>
+              <span>26</span>
+              <span>27</span>
+              <span>28</span>
+              <span>29</span>
+              <span>30</span>
+              <span>31</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">📈 Proyección fin de mes</span>
+              <span style="font-weight:600;color:#10b981;">+$2,847.50</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">📅 Próximo pago</span>
+              <span style="font-weight:600;">Netflix · -$15.99</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">🌟 Días sin gasto</span>
+              <span style="font-weight:600;color:#0d9488;">3 este mes</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Calendario Financiero</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 13. CONEXIÓN BANCARIA -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">13. Conexión Bancaria <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Importación automática de transacciones desde entidades bancarias.</p>
+
+  <div class="feature-row">
+    <div class="feature-text">
+      <p>La función de conexión bancaria permite vincular cuentas bancarias reales para importar transacciones automáticamente. Aunque actualmente funciona en modo simulado, la interfaz permite seleccionar el banco entre múltiples entidades, establecer una conexión segura con cifrado simulado TLS 1.3, e importar automáticamente las transacciones de los últimos 3 meses.</p>
+
+      <p>Incluye detección de nómina para ajustar el ingreso mensual, sincronización programable (diaria o semanal), y desconexión segura en un clic.</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Conectar un banco</h4>
+        <ol>
+          <li>Acceda a <strong>Conexión Bancaria</strong> desde el menú.</li>
+          <li>Seleccione su <strong>entidad bancaria</strong> de la lista disponible.</li>
+          <li>Pulse <strong>"Conectar"</strong> para iniciar la vinculación segura.</li>
+          <li>Una vez conectado, las transacciones de los últimos 3 meses se importarán automáticamente.</li>
+          <li>Configure la <strong>frecuencia de sincronización</strong>: diaria o semanal.</li>
+          <li>Para <strong>desconectar</strong>, pulse "Desconectar banco" y confirme la acción.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">🏦 Conexión Bancaria</span>
+          </div>
+
+          <div class="mock-card" style="border:2px solid #0d9488;">
+            <div class="row">
+              <span style="font-weight:600;">ING</span>
+              <span class="badge-green">Conectado</span>
+            </div>
+            <div style="font-size:12px;color:#888;margin:4px 0;">ES12 **** 3456</div>
+            <div style="font-size:11px;color:#555;">Última sincronización: Hoy 09:30</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">📄 Transacciones importadas</span>
+              <span style="font-weight:600;">24</span>
+            </div>
+            <div style="font-size:11px;color:#888;">en los últimos 3 meses</div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">💰 Nómina detectada</span>
+              <span style="font-weight:600;">$3,000.00/mes</span>
+            </div>
+          </div>
+
+          <div style="font-size:12px;color:#555;margin:12px 0 8px;">Frecuencia de sincronización:</div>
+          <div style="display:flex;gap:8px;">
+            <div class="mock-btn" style="font-size:11px;padding:8px;flex:1;">Diaria</div>
+            <div class="mock-btn gray" style="font-size:11px;padding:8px;flex:1;">Semanal</div>
+          </div>
+
+          <div class="mock-btn gray" style="margin-top:12px;font-size:12px;">Desconectar banco</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Conexión Bancaria</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- 14. AJUSTES -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">14. Ajustes y Configuración <span class="badge">IMPLEMENTADO</span></h2>
+  <p class="sec-desc">Personaliza la aplicación según tus preferencias y necesidades.</p>
+
+  <div class="feature-row reverse">
+    <div class="feature-text">
+      <p>La sección de ajustes permite configurar todos los aspectos de la aplicación. Incluye información financiera (ingreso mensual, moneda, período), selección de personalidad de IA (Balanceada, Ahorro Agresivo, Flexible), apariencia (tema claro/oscuro con toggle), gestión de datos (exportar/importar JSON, reseteo completo), perfil de usuario (nombre, email, avatar, cambio de contraseña) y notificaciones (alertas de presupuesto, recordatorios, informes semanales).</p>
+
+      <div class="steps-box">
+        <h4>Paso a paso — Configurar la aplicación</h4>
+        <ol>
+          <li>Acceda a <strong>Ajustes</strong> desde el menú principal.</li>
+          <li><strong>Información financiera:</strong> Establezca su ingreso mensual, moneda preferida (EUR/USD/GBP/MXN) y período de facturación.</li>
+          <li><strong>Personalidad IA:</strong> Seleccione entre Balanceada, Ahorro Agresivo o Flexible.</li>
+          <li><strong>Apariencia:</strong> Active o desactive el modo oscuro con el toggle.</li>
+          <li><strong>Perfil:</strong> Edite su nombre, email, avatar o cambie su contraseña.</li>
+          <li><strong>Notificaciones:</strong> Active o desactive alertas de presupuesto, recordatorios e informes semanales.</li>
+          <li><strong>Datos:</strong> Exporte o importe sus datos en formato JSON, o realice un reseteo completo si lo desea.</li>
+          <li>Pulse <strong>"Guardar cambios"</strong> para confirmar todas las modificaciones.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="phone-mock">
+      <div class="status-bar"><span>9:41</span><span>📶 🔋 100%</span></div>
+      <div class="screen">
+        <div class="screen-inner">
+          <div class="mock-header">
+            <span class="logo">⚙️ Ajustes</span>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">💰 Ingreso mensual</span>
+              <span style="font-weight:600;">$3,000.00</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">💱 Moneda</span>
+              <span style="font-weight:600;">USD · Dólar</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🧠 Personalidad IA</span>
+              <span style="font-weight:600;">Balanceada ▼</span>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">🌙 Modo oscuro</span>
+              <div class="mock-toggle">
+                <div class="track"><div class="thumb"></div></div>
+              </div>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">🔔 Notificaciones</span>
+              <div class="mock-toggle">
+                <div class="track"><div class="thumb"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="mock-card">
+            <div class="row">
+              <span style="font-size:13px;">📤 Exportar datos</span>
+              <span style="color:#0d9488;font-size:12px;">JSON →</span>
+            </div>
+            <div class="row">
+              <span style="font-size:13px;">📥 Importar datos</span>
+              <span style="color:#0d9488;font-size:12px;">JSON →</span>
+            </div>
+          </div>
+
+          <div class="mock-btn" style="font-size:12px;padding:10px;">Guardar cambios</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top:20px;font-style:italic;color:#888;font-size:13px;">
+    📸 <em>Espacio para captura de pantalla — Ajustes y Configuración</em>
+  </p>
+
+  <hr class="page-break">
+
+  <!-- ============================================================ -->
+  <!-- CONCLUSIONES -->
+  <!-- ============================================================ -->
+  <h2 class="sec-title">Conclusiones</h2>
+  <p class="sec-desc">Resumen del proyecto y viabilidad</p>
+
+  <p><strong>BudgetIQ</strong> es una aplicación completa de gestión financiera con dos modos de uso: manual (barras de progreso interactivas) e IA (gráfico circular + recomendaciones). La base de datos MySQL con 25 tablas soporta todas las funcionalidades: planes, usuarios, transacciones, presupuestos, objetivos, alertas, insights de IA, seguridad, facturación y soporte técnico.</p>
+
+  <h3>Viabilidad técnica</h3>
+  <ul>
+    <li>MySQL 8.0 con integridad referencial e índices optimizados</li>
+    <li>Arquitectura multi-usuario con plan familiar</li>
+    <li>Sistema de auditoría completo</li>
+    <li>Motor de IA con 7 tipos de análisis</li>
+    <li>App web responsive con HTML/CSS/JS</li>
+  </ul>
+
+  <h3>Viabilidad comercial</h3>
+  <ul>
+    <li>Modelo freemium con 3 niveles competitivos</li>
+    <li>Mercado amplio: jóvenes profesionales y familias</li>
+    <li>Diferenciación mediante IA vs apps básicas</li>
+    <li>Ingresos recurrentes con suscripciones mensuales</li>
+    <li>Plan familiar como ventaja competitiva (5 miembros)</li>
+  </ul>
+
+  <p style="margin-top:24px;padding:16px;background:#f0fdf4;border-radius:8px;border-left:4px solid #0d9488;font-size:14px;color:#166534;">
+    <strong>Conclusión final:</strong> BudgetIQ es viable técnica y comercialmente. La BD estructurada permite almacenar y analizar datos eficientemente. El motor de IA aporta valor real detectando patrones, anomalías y generando recomendaciones accionables. El modelo freemium con planes escalables ofrece un camino claro hacia la monetización.
+  </p>
+
+  <hr class="page-break">
+
+  <div style="text-align:center;color:#888;font-size:13px;padding:40px 0;">
+    BudgetIQ — Optimización de Dinero con Inteligencia Artificial<br>
+    Proyecto Final ASIX — CFGS Administración de Sistemas Informáticos en Red<br>
+    Alumno: Marc Julia · Curso 2025–2026
+  </div>
+
+</div>
+
+</body>
+</html>

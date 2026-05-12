@@ -125,14 +125,14 @@ export default function BankConnector({ open, onClose }: Props) {
 
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-1.5">Usuario / Identificador</label>
-                <input type="text" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-surface text-white border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500/50" placeholder="ej: usuario001" />
+                <input type="text" value={username} onChange={e => setUsername(e.target.value)} className="w-full bg-surface text-text-primary border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-brand-500/50" placeholder="ej: usuario001" />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-text-muted mb-1.5">Contraseña</label>
                 <div className="relative">
-                  <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-surface text-white border border-border rounded-xl px-4 py-3 pr-10 text-sm focus:outline-none focus:border-brand-500/50" placeholder="••••••••" />
-                  <button onClick={() => setShowPass(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-white">
+                  <input type={showPass ? 'text' : 'password'} value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-surface text-text-primary border border-border rounded-xl px-4 py-3 pr-10 text-sm focus:outline-none focus:border-brand-500/50" placeholder="••••••••" />
+                  <button onClick={() => setShowPass(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary">
                     {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -144,8 +144,8 @@ export default function BankConnector({ open, onClose }: Props) {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button onClick={() => setStep('select')} className="flex-1 px-4 py-3 text-sm font-medium text-text-muted hover:text-white bg-surface-lighter/50 border border-border rounded-xl">Atrás</button>
-                <button onClick={handleConnect} disabled={!username || !password} className="flex-1 px-4 py-3 text-sm font-medium text-white bg-gradient-to-r from-brand-500 to-brand-600 disabled:opacity-50 rounded-xl shadow-lg shadow-brand-500/20">Conectar</button>
+                <button onClick={() => setStep('select')} className="flex-1 px-4 py-3 text-sm font-medium text-text-muted hover:text-text-primary bg-surface-lighter/50 border border-border rounded-xl">Atrás</button>
+                <button onClick={handleConnect} disabled={!username || !password} className="flex-1 px-4 py-3 text-sm font-medium text-text-primary bg-gradient-to-r from-brand-500 to-brand-600 disabled:opacity-50 rounded-xl shadow-lg shadow-brand-500/20">Conectar</button>
               </div>
             </motion.div>
           )}
@@ -176,7 +176,7 @@ export default function BankConnector({ open, onClose }: Props) {
                 <p className="flex items-center justify-between"><span>Cuenta:</span><span className="font-medium text-text-primary">{accountNum.slice(0, 4)} **** **** {accountNum.slice(-4)}</span></p>
                 <p className="flex items-center justify-between mt-1"><span>Última sincronización:</span><span className="font-medium text-text-primary">Ahora</span></p>
               </div>
-              <button onClick={handleClose} className="mt-6 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-white font-semibold text-sm rounded-xl shadow-lg shadow-brand-500/20">Ir al Panel</button>
+              <button onClick={handleClose} className="mt-6 px-6 py-3 bg-gradient-to-r from-brand-500 to-brand-600 text-text-primary font-semibold text-sm rounded-xl shadow-lg shadow-brand-500/20">Ir al Panel</button>
             </motion.div>
           )}
 

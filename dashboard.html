@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BudgetIQ — Inicio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #f0f4f8;
+      --surface: #ffffff;
+      --surface-hover: #f8fafc;
+      --border: #e2e8f0;
+      --text: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --brand: #0d9488;
+      --brand-light: #14b8a6;
+      --brand-dark: #0f766e;
+      --brand-glow: rgba(13, 148, 136, 0.15);
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.06);
+      --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.06), 0 4px 10px -6px rgba(0,0,0,0.04);
+      --radius: 16px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding-bottom: 5rem;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+
+    /* Container */
+    .container { max-width: 480px; margin: 0 auto; padding: 1.25rem 1rem; }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      box-shadow: 0 4px 12px var(--brand-glow);
+    }
+
+    .header-info h1 {
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .header-info p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 400;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--text-secondary);
+      font-size: 1.2rem;
+    }
+
+    .icon-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--brand);
+      color: var(--brand);
+      box-shadow: 0 0 0 3px var(--brand-glow);
+    }
+
+    /* Balance Card */
+    .balance-card {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+    }
+
+    .balance-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -30%;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(13,148,136,0.12) 0%, transparent 70%);
+    }
+
+    .balance-card::after {
+      content: '';
+      position: absolute;
+      bottom: -40%;
+      left: -20%;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, transparent 70%);
+    }
+
+    .balance-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-label {
+      font-size: 0.8rem;
+      color: rgba(255,255,255,0.6);
+      font-weight: 500;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .balance-period {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.4);
+      background: rgba(255,255,255,0.06);
+      padding: 0.25rem 0.6rem;
+      border-radius: 9999px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .balance-amount {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: white;
+      letter-spacing: -0.03em;
+      margin: 0.3rem 0 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-amount span {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .balance-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: 0.3rem;
+      height: 40px;
+      margin-bottom: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .bar {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      background: linear-gradient(to top, var(--brand), var(--brand-light));
+      opacity: 0.3;
+      transition: all 0.3s;
+      min-height: 4px;
+    }
+
+    .bar.active { opacity: 1; }
+    .bar:nth-child(1) { height: 40%; }
+    .bar:nth-child(2) { height: 55%; }
+    .bar:nth-child(3) { height: 30%; }
+    .bar:nth-child(4) { height: 65%; }
+    .bar:nth-child(5) { height: 45%; }
+    .bar:nth-child(6) { height: 75%; }
+    .bar:nth-child(7) { height: 50%; }
+    .bar:nth-child(8) { height: 35%; }
+    .bar:nth-child(9) { height: 60%; }
+    .bar:nth-child(10) { height: 25%; }
+    .bar:nth-child(11) { height: 70%; }
+    .bar:nth-child(12) { height: 42%; }
+    .bar:nth-child(13) { height: 58%; }
+    .bar:nth-child(14) { height: 38%; }
+
+    .balance-footer {
+      display: flex;
+      justify-content: space-between;
+      position: relative;
+      z-index: 1;
+    }
+
+    .balance-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .balance-stat .label {
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.02em;
+    }
+
+    .balance-stat .value {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: white;
+    }
+
+    .balance-stat .value.up { color: var(--success); }
+    .balance-stat .value.down { color: var(--danger); }
+
+    /* Quick Actions */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .section-header h2 {
+      font-size: 1rem;
+      font-weight: 700;
+    }
+
+    .section-header a {
+      font-size: 0.8rem;
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 600;
+      transition: opacity 0.2s;
+    }
+
+    .section-header a:hover { opacity: 0.7; }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .action-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: all 0.25s;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .action-card:hover {
+      border-color: var(--brand);
+      box-shadow: 0 4px 16px var(--brand-glow);
+      transform: translateY(-2px);
+    }
+
+    .action-card:active {
+      transform: translateY(0);
+    }
+
+    .action-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .action-card .name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+    }
+
+    .action-card .desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .icon-manual { background: rgba(245,158,11,0.1); color: #d97706; }
+    .icon-ai { background: rgba(99,102,241,0.1); color: #6366f1; }
+    .icon-budget { background: rgba(16,185,129,0.1); color: var(--success); }
+    .icon-scan { background: rgba(236,72,153,0.1); color: #ec4899; }
+
+    /* Recent Activity */
+    .recent-list {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .recent-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.9rem 1rem;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      cursor: pointer;
+    }
+
+    .recent-item:last-child { border-bottom: none; }
+    .recent-item:hover { background: var(--surface-hover); }
+
+    .recent-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    .recent-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .recent-info .title {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .recent-info .meta {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 0.1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .recent-info .meta .dot {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--text-muted);
+    }
+
+    .recent-amount {
+      font-size: 0.85rem;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .expense { color: var(--danger); }
+    .income { color: var(--success); }
+
+    .icon-housing { background: rgba(99,102,241,0.1); color: #6366f1; }
+    .icon-food { background: rgba(245,158,11,0.1); color: #d97706; }
+    .icon-transport { background: rgba(16,185,129,0.1); color: var(--success); }
+    .icon-entertainment { background: rgba(236,72,153,0.1); color: #ec4899; }
+    .icon-salary { background: rgba(16,185,129,0.1); color: var(--success); }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 2rem);
+      max-width: 440px;
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.5rem 0.25rem;
+      display: flex;
+      justify-content: space-around;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.15rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 12px;
+      text-decoration: none;
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    .nav-item .nav-icon {
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .nav-item.active {
+      color: var(--brand);
+      background: var(--brand-glow);
+    }
+
+    .nav-item:hover:not(.active) {
+      color: var(--text-secondary);
+    }
+
+    /* Modal Overlay (simple) */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.4);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open { display: flex; }
+
+    .modal {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 1.5rem;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+      animation: modalIn 0.3s ease;
+    }
+
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.95) translateY(10px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .modal h3 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    .modal p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 1.25rem;
+    }
+
+    .modal-btn {
+      width: 100%;
+      padding: 0.85rem;
+      border-radius: 12px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-btn:last-child { margin-bottom: 0; }
+
+    .modal-btn.primary {
+      background: linear-gradient(135deg, var(--brand), var(--brand-light));
+      color: white;
+      box-shadow: 0 4px 16px var(--brand-glow);
+    }
+
+    .modal-btn.primary:hover { opacity: 0.9; transform: translateY(-1px); }
+
+    .modal-btn.secondary {
+      background: var(--surface-hover);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+    }
+
+    .modal-btn.secondary:hover { background: var(--border); }
+
+    /* FAB */
+    .fab {
+      position: fixed;
+      bottom: 5.5rem;
+      right: 1.5rem;
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+      color: white;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(13,148,136,0.35);
+      transition: all 0.25s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+    }
+
+    .fab:hover {
+      transform: scale(1.08);
+      box-shadow: 0 8px 28px rgba(13,148,136,0.45);
+    }
+
+    .fab:active { transform: scale(0.95); }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .animate-in {
+      animation: fadeUp 0.5s ease forwards;
+      opacity: 0;
+    }
+
+    .delay-1 { animation-delay: 0.05s; }
+    .delay-2 { animation-delay: 0.1s; }
+    .delay-3 { animation-delay: 0.15s; }
+    .delay-4 { animation-delay: 0.2s; }
+    .delay-5 { animation-delay: 0.25s; }
+    .delay-6 { animation-delay: 0.3s; }
+
+    /* Responsive */
+    @media (min-width: 768px) {
+      body { padding: 2rem 0 6rem 0; }
+      .container { max-width: 520px; }
+      .balance-amount { font-size: 3rem; }
+      .actions-grid { gap: 1rem; }
+    }
+
+    @media (max-width: 360px) {
+      .container { padding: 1rem 0.75rem; }
+      .balance-amount { font-size: 2rem; }
+      .action-card { padding: 1rem 0.75rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Modal -->
+  <div class="modal-overlay" id="addModal">
+    <div class="modal">
+      <h3>Nuevo movimiento</h3>
+      <p>¿Qué tipo de transacción quieres registrar?</p>
+      <button class="modal-btn primary" onclick="document.getElementById('addModal').classList.remove('open')">
+        💸 &nbsp; Registrar gasto
+      </button>
+      <button class="modal-btn primary" onclick="document.getElementById('addModal').classList.remove('open')" style="background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 4px 16px rgba(16,185,129,0.2);">
+        💰 &nbsp; Registrar ingreso
+      </button>
+      <button class="modal-btn secondary" onclick="document.getElementById('addModal').classList.remove('open')">
+        Cancelar
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Header -->
+    <header class="header animate-in">
+      <div class="header-left">
+        <div class="avatar">J</div>
+        <div class="header-info">
+          <h1>Javier</h1>
+          <p>Buenos días ☀️</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="settings" class="icon-btn">⚙️</a>
+        <a href="logout" class="icon-btn">🚪</a>
+      </div>
+    </header>
+
+    <!-- Balance Card -->
+    <div class="balance-card animate-in delay-1">
+      <div class="balance-top">
+        <span class="balance-label">Saldo total</span>
+        <span class="balance-period">Este mes</span>
+      </div>
+      <div class="balance-amount">
+        $2,847.50 <span>USD</span>
+      </div>
+      <div class="balance-chart">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar active"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+      </div>
+      <div class="balance-footer">
+        <div class="balance-stat">
+          <span class="label">Ingresos</span>
+          <span class="value up">+$3,200.00</span>
+        </div>
+        <div class="balance-stat">
+          <span class="label">Gastos</span>
+          <span class="value down">-$352.50</span>
+        </div>
+        <div class="balance-stat">
+          <span class="label">Ahorro</span>
+          <span class="value up">+$2,847.50</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="section-header animate-in delay-2">
+      <h2>Acciones rápidas</h2>
+      <a href="#">Ver todo →</a>
+    </div>
+    <div class="actions-grid">
+      <a href="manual" class="action-card animate-in delay-2">
+        <div class="action-icon icon-manual">✍️</div>
+        <div class="name">Modo Manual</div>
+        <div class="desc">Control total de tus finanzas</div>
+      </a>
+      <a href="ai" class="action-card animate-in delay-3">
+        <div class="action-icon icon-ai">🤖</div>
+        <div class="name">Modo IA</div>
+        <div class="desc">Optimización inteligente</div>
+      </a>
+      <a href="budgets" class="action-card animate-in delay-4">
+        <div class="action-icon icon-budget">📊</div>
+        <div class="name">Presupuestos</div>
+        <div class="desc">Metas y límites de gasto</div>
+      </a>
+      <a href="scan" class="action-card animate-in delay-5">
+        <div class="action-icon icon-scan">📸</div>
+        <div class="name">Escanear Ticket</div>
+        <div class="desc">IA extrae los datos</div>
+      </a>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section-header animate-in delay-5">
+      <h2>Actividad reciente</h2>
+      <a href="#">Ver todo →</a>
+    </div>
+    <div class="recent-list animate-in delay-6">
+      <div class="recent-item">
+        <div class="recent-icon icon-housing">🏠</div>
+        <div class="recent-info">
+          <div class="title">Alquiler Mayo</div>
+          <div class="meta">Hoy <span class="dot"></span> Vivienda</div>
+        </div>
+        <div class="recent-amount expense">-$900.00</div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-icon icon-food">🛒</div>
+        <div class="recent-info">
+          <div class="title">Supermercado</div>
+          <div class="meta">Ayer <span class="dot"></span> Alimentación</div>
+        </div>
+        <div class="recent-amount expense">-$156.30</div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-icon icon-salary">💼</div>
+        <div class="recent-info">
+          <div class="title">Nómina</div>
+          <div class="meta">1 may <span class="dot"></span> Salario</div>
+        </div>
+        <div class="recent-amount income">+$3,200.00</div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-icon icon-food">🍕</div>
+        <div class="recent-info">
+          <div class="title">Cena restaurante</div>
+          <div class="meta">1 may <span class="dot"></span> Alimentación</div>
+        </div>
+        <div class="recent-amount expense">-$42.50</div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-icon icon-transport">⛽</div>
+        <div class="recent-info">
+          <div class="title">Gasolina</div>
+          <div class="meta">30 abr <span class="dot"></span> Transporte</div>
+        </div>
+        <div class="recent-amount expense">-$65.00</div>
+      </div>
+      <div class="recent-item">
+        <div class="recent-icon icon-entertainment">🎮</div>
+        <div class="recent-info">
+          <div class="title">Netflix + Spotify</div>
+          <div class="meta">30 abr <span class="dot"></span> Suscripciones</div>
+        </div>
+        <div class="recent-amount expense">-$21.99</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" onclick="document.getElementById('addModal').classList.add('open')">+</button>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      Inicio
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">📊</span>
+      Stats
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">💳</span>
+      Movimientos
+    </a>
+    <a href="#" class="nav-item">
+      <span class="nav-icon">👤</span>
+      Perfil
+    </a>
+  </nav>
+</body>
+</html>
