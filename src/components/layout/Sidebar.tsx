@@ -1,10 +1,10 @@
 import { useState } from 'react'
-import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, PiggyBank, Brain, ArrowLeftRight, Settings, Menu, X, Sparkles, Sun, Moon, BarChart3, ScanLine, Target, Users, CalendarDays, ChevronRight } from 'lucide-react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { LayoutDashboard, PiggyBank, Brain, ArrowLeftRight, Settings, Menu, X, Sparkles, Sun, Moon, BarChart3, ScanLine, Target, Users, CalendarDays, ChevronRight, ExternalLink } from 'lucide-react'
 import { useTheme } from '../../store/ThemeContext'
 
 const LINKS = [
-  { to: '/', icon: LayoutDashboard, label: 'Panel', color: 'from-brand-400 to-brand-500' },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Panel', color: 'from-brand-400 to-brand-500' },
   { to: '/budgets', icon: PiggyBank, label: 'Presupuestos', color: 'from-emerald-400 to-emerald-500' },
   { to: '/ai-mode', icon: Brain, label: 'Modo IA', color: 'from-violet-400 to-violet-500' },
   { to: '/transactions', icon: ArrowLeftRight, label: 'Transacciones', color: 'from-blue-400 to-blue-500' },
@@ -19,6 +19,7 @@ const LINKS = [
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
   const { theme, toggle } = useTheme()
+  const navigate = useNavigate()
 
   return (
     <>
@@ -43,7 +44,7 @@ export default function Sidebar() {
         }`}
       >
         <div className="p-6 border-b border-border">
-          <NavLink to="/" className="flex items-center gap-3 group" onClick={() => setOpen(false)}>
+          <NavLink to="/dashboard" className="flex items-center gap-3 group" onClick={() => setOpen(false)}>
             <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20 group-hover:scale-105 group-hover:shadow-brand-500/30 transition-all duration-200">
               <Sparkles size={22} className="text-white" />
             </div>
@@ -87,6 +88,15 @@ export default function Sidebar() {
         </nav>
 
         <div className="p-4 border-t border-border space-y-3">
+          <button
+            onClick={() => navigate('/')}
+            className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-lighter/50 border border-transparent hover:border-border transition-all"
+          >
+            <div className="w-8 h-8 rounded-lg bg-surface-lighter/50 flex items-center justify-center flex-shrink-0">
+              <ExternalLink size={16} className="text-brand-400" />
+            </div>
+            <span>Página de inicio</span>
+          </button>
           <button
             onClick={toggle}
             className="flex items-center gap-3 w-full px-4 py-2.5 rounded-xl text-sm font-medium text-text-secondary hover:text-text-primary hover:bg-surface-lighter/50 border border-transparent hover:border-border transition-all"

@@ -1,13 +1,14 @@
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { useMemo } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Sparkles, TrendingUp, Bell, Wallet } from 'lucide-react'
+import { Sparkles, TrendingUp, Bell, Wallet, LogIn } from 'lucide-react'
 import { useApp } from '../../store/AppContext'
+import { useAuth } from '../../store/AuthContext'
 import { fmt } from '../../lib/utils'
 
 const TITLES: Record<string, { title: string; subtitle: string }> = {
-  '/': { title: 'Panel de Control', subtitle: 'Resumen financiero general' },
+  '/dashboard': { title: 'Panel de Control', subtitle: 'Resumen financiero general' },
   '/budgets': { title: 'Presupuestos', subtitle: 'Control de gastos por categoría' },
   '/ai-mode': { title: 'Optimizador IA', subtitle: 'Planificación financiera inteligente' },
   '/transactions': { title: 'Transacciones', subtitle: 'Historial de movimientos' },
@@ -21,7 +22,10 @@ const TITLES: Record<string, { title: string; subtitle: string }> = {
 
 export default function Header() {
   const { pathname } = useLocation()
+  const navigate = useNavigate()
   const { state } = useApp()
+  const { user, signOut } = useAuth()
+  const isGuest = !user && sessionStorage.getItem('budgetiq-guest') === 'true'
   const page = TITLES[pathname] ?? { title: 'BudgetIQ', subtitle: '' }
   const isAI = pathname === '/ai-mode'
 
@@ -55,6 +59,12 @@ export default function Header() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {isGuest && (
+            <button onClick={() => navigate('/login')} className="flex items-center gap-1.5 px-3 py-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 text-xs font-semibold hover:bg-amber-500/20 transition-all">
+              <LogIn size={14} /> <span className="hidden sm:inline">Inicia sesión</span>
+            </button>
+          )}
+
           {alertCount > 0 && (
             <div className="relative flex items-center gap-1.5 px-3 py-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 text-xs font-semibold">
               <Bell size={14} />
@@ -75,6 +85,12 @@ export default function Header() {
               {fmt(state.preferences.monthlyIncome, state.preferences.currency)}
             </span>
           </div>
+
+          {!isGuest && user && (
+            <button onClick={() => signOut()} className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-text-muted hover:text-danger hover:bg-danger/10 rounded-xl border border-border hover:border-danger/20 transition-all" title="Cerrar sesión">
+              Salir
+            </button>
+          )}
         </div>
       </div>
     </header>
