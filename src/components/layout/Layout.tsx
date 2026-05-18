@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
-import { motion } from 'framer-motion'
+import { Outlet } from 'react-router-dom'
 import Sidebar from './Sidebar'
 import Header from './Header'
 import Tutorial from '../ui/Tutorial'
 
 export default function Layout() {
-  const location = useLocation()
   const [showTutorial, setShowTutorial] = useState(false)
 
   useEffect(() => {
@@ -28,14 +26,7 @@ export default function Layout() {
       <div className="flex flex-col flex-1 overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto p-6 lg:p-8">
-          <motion.div
-            key={location.pathname}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            <Outlet />
-          </motion.div>
+          <Outlet />
         </main>
       </div>
       {showTutorial && <Tutorial onClose={finishTutorial} />}

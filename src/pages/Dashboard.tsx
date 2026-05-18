@@ -1,7 +1,6 @@
 import { useState, useMemo } from 'react'
 import { TrendingUp, TrendingDown, PiggyBank, Wallet, Building, Settings, Target, Brain, ArrowUpRight, ChevronRight } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { motion } from 'framer-motion'
 
 import BudgetCard from '../components/finance/BudgetCard'
 import TransactionRow from '../components/finance/TransactionRow'
@@ -126,19 +125,10 @@ export default function Dashboard() {
     return { diff, pct, up: diff > 0 }
   }, [stats, lastStats])
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.06 } },
-  } as const
-  const itemAnim = {
-    hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' as const } },
-  } as const
-
   return (
-    <motion.div variants={container} initial="hidden" animate="show" className="space-y-5">
+    <div className="space-y-5">
       {/* ── Top metrics bar ── */}
-      <motion.div variants={itemAnim} className="grid grid-cols-2 md:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
         <div className="col-span-2 md:col-span-5 flex flex-wrap items-center justify-between gap-3 p-4 bg-surface-light border border-border rounded-xl">
           <div className="flex items-center gap-6 flex-wrap">
             <div>
@@ -179,11 +169,11 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       {/* ── Setup / Bank connect row ── */}
       {(!hasIncome || !bank) && (
-        <motion.div variants={itemAnim} className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-3">
           {!hasIncome && (
             <div className="flex-1 min-w-[240px] flex items-center gap-3 p-3.5 bg-surface-light border border-border rounded-xl">
               <div className="w-9 h-9 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0">
@@ -211,20 +201,18 @@ export default function Dashboard() {
                 <p className="text-sm font-medium truncate">{bank.bankName}</p>
                 <p className="text-xs text-text-muted truncate">{bank.accountNumber.slice(0,4)} **** {bank.accountNumber.slice(-4)}</p>
               </div>
-              <button onClick={() => setBank(null)} className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-danger rounded-lg hover:bg-danger/5 transition-all">×</button>
+              <button onClick={() => setBank(null)} className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-danger rounded-lg hover:bg-danger/5 transition-all">x</button>
             </div>
           )}
-        </motion.div>
+        </div>
       )}
 
       {/* ── Main 2-column grid ── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-
         {/* ──────────── LEFT COLUMN ──────────── */}
         <div className="lg:col-span-7 space-y-5">
-
           {/* KPI mini-cards row */}
-          <motion.div variants={itemAnim} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {[
               { label: 'Ingresos', value: fmt(stats.income, cur), icon: TrendingUp, color: 'text-success', bg: 'bg-success/5' },
               { label: 'Gastos', value: fmt(stats.expense, cur), icon: TrendingDown, color: 'text-danger', bg: 'bg-danger/5' },
@@ -241,10 +229,10 @@ export default function Dashboard() {
                 <p className="text-base font-bold tracking-tight">{k.value}</p>
               </div>
             ))}
-          </motion.div>
+          </div>
 
           {/* Weekly trend chart */}
-          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+          <div className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-sm font-semibold">Tendencia Semanal</h3>
@@ -266,31 +254,31 @@ export default function Dashboard() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-          </motion.div>
+          </div>
 
           {/* Forecast card */}
           {forecast && (
-            <motion.div variants={itemAnim} className="bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl p-4 sm:p-5 text-white">
+            <div className="bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl p-4 sm:p-5 text-white">
               <div className="flex items-center gap-2 mb-2">
                 <Brain size={15} className="text-white/80" />
                 <span className="text-xs font-semibold text-white/80 uppercase tracking-wider">IA Predictiva</span>
               </div>
-              <p className="text-sm text-white/80">Al ritmo actual, en <strong>6 meses</strong> tendrás</p>
+              <p className="text-sm text-white/80">Al ritmo actual, en <strong>6 meses</strong> tendras</p>
               <p className="text-2xl font-bold tracking-tight mt-1">{fmt(forecast.in6Months, cur)}</p>
               <div className="flex gap-4 mt-2 text-xs text-white/70">
                 <span>Por mes: {fmt(forecast.monthly, cur)}</span>
                 <span>|</span>
-                <span>Por año: {fmt(forecast.yearly, cur)}</span>
+                <span>Por ano: {fmt(forecast.yearly, cur)}</span>
               </div>
-            </motion.div>
+            </div>
           )}
 
           {/* Recent transactions */}
-          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+          <div className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-sm font-semibold">Transacciones Recientes</h3>
-                <p className="text-xs text-text-muted">Últimos movimientos</p>
+                <p className="text-xs text-text-muted">Ultimos movimientos</p>
               </div>
               <button onClick={() => navigate('/transactions')} className="text-xs font-medium text-brand-500 hover:text-brand-600 transition-colors flex items-center gap-1">
                 Ver todas <ChevronRight size={12} />
@@ -302,14 +290,13 @@ export default function Dashboard() {
                 <p className="text-sm text-text-muted text-center py-8">No hay transacciones recientes.</p>
               )}
             </div>
-          </motion.div>
+          </div>
         </div>
 
         {/* ──────────── RIGHT COLUMN ──────────── */}
         <div className="lg:col-span-5 space-y-5">
-
           {/* Health Score card */}
-          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+          <div className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-sm font-semibold">Salud Financiera</h3>
@@ -334,14 +321,14 @@ export default function Dashboard() {
               <div className="p-2 rounded-lg bg-warning/5"><p className="font-semibold text-warning">{budgets.filter(b => getStatus(progress(b.spent, b.limit)) === 'warning').length}</p><p className="text-text-muted mt-0.5">Riesgo</p></div>
               <div className="p-2 rounded-lg bg-danger/5"><p className="font-semibold text-danger">{budgets.filter(b => getStatus(progress(b.spent, b.limit)) === 'danger').length}</p><p className="text-text-muted mt-0.5">Excedidos</p></div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Distribution pie */}
-          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+          <div className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
             <div className="flex items-center justify-between mb-3">
               <div>
-                <h3 className="text-sm font-semibold">Distribución</h3>
-                <p className="text-xs text-text-muted">Gastos por categoría</p>
+                <h3 className="text-sm font-semibold">Distribucion</h3>
+                <p className="text-xs text-text-muted">Gastos por categoria</p>
               </div>
             </div>
             <div className="flex items-center gap-4">
@@ -364,10 +351,10 @@ export default function Dashboard() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           {/* Insights + Budgets combined */}
-          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+          <div className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
             <div className="flex items-center justify-between mb-3">
               <div>
                 <h3 className="text-sm font-semibold">Insights & Presupuestos</h3>
@@ -378,7 +365,7 @@ export default function Dashboard() {
               {stats.rate >= 15 ? (
                 <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-success/5 border border-success/10">
                   <div className="w-7 h-7 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0"><Target size={13} className="text-success" /></div>
-                  <div><p className="text-xs font-medium">Buena tasa de ahorro ({stats.rate.toFixed(0)}%)</p><p className="text-[11px] text-text-muted mt-0.5">Sigue así, vas por buen camino</p></div>
+                  <div><p className="text-xs font-medium">Buena tasa de ahorro ({stats.rate.toFixed(0)}%)</p><p className="text-[11px] text-text-muted mt-0.5">Sigue asi, vas por buen camino</p></div>
                 </div>
               ) : stats.rate <= 0 ? (
                 <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-danger/5 border border-danger/10">
@@ -428,11 +415,11 @@ export default function Dashboard() {
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       <BankConnector open={bankOpen} onClose={() => setBankOpen(false)} />
-    </motion.div>
+    </div>
   )
 }
