@@ -1,4 +1,4 @@
-import { lazy, Component, useState, type ReactNode } from 'react'
+import { lazy, Suspense, Component, useState, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { Sparkles } from 'lucide-react'
 import { AppProvider } from './store/AppContext'
@@ -7,6 +7,7 @@ import { ToastProvider } from './store/ToastContext'
 import { AuthProvider, useAuth } from './store/AuthContext'
 import Layout from './components/layout/Layout'
 import Landing from './pages/Landing'
+import LoadingScreen from './components/ui/LoadingScreen'
 
 const Login = lazy(() => import('./pages/Login'))
 const Signup = lazy(() => import('./pages/Signup'))
@@ -84,6 +85,7 @@ export default function App() {
           <ToastProvider>
             <AppProvider>
               <ErrorBoundary>
+                <Suspense fallback={<LoadingScreen />}>
                 <Routes>
                   <Route path="/" element={<Landing />} />
                   <Route path="/login" element={<Login />} />
@@ -101,6 +103,7 @@ export default function App() {
                     <Route path="/calendar" element={<Calendar />} />
                   </Route>
                 </Routes>
+                </Suspense>
               </ErrorBoundary>
             </AppProvider>
           </ToastProvider>

@@ -91,10 +91,40 @@ export default function Dashboard() {
     [transactions]
   )
 
+  const lastMonthTx = useMemo(() => {
+    const now = new Date()
+    const last = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+    return transactions.filter(t => {
+      const d = new Date(t.date)
+      return d.getMonth() === last.getMonth() && d.getFullYear() === last.getFullYear()
+    })
+  }, [transactions])
+
+  const lastStats = useMemo(() => {
+    const income = lastMonthTx.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
+    const expense = lastMonthTx.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
+    return { income, expense, savings: income - expense }
+  }, [lastMonthTx])
+
   const totalBudget = budgets.reduce((s, b) => s + b.limit, 0)
   const bank = preferences.bank
   const bankMeta = bank ? BANKS.find(b => b.id === bank.bankId) : null
   const hasIncome = preferences.monthlyIncome > 0
+
+  const forecast = useMemo(() => {
+    if (stats.savings <= 0 || !hasIncome) return null
+    const monthly = stats.savings
+    const yearly = monthly * 12
+    const in6Months = monthly * 6
+    return { monthly, yearly, in6Months }
+  }, [stats, hasIncome])
+
+  const comparison = useMemo(() => {
+    if (lastStats.expense === 0) return null
+    const diff = stats.expense - lastStats.expense
+    const pct = lastStats.expense > 0 ? (diff / lastStats.expense) * 100 : 0
+    return { diff, pct, up: diff > 0 }
+  }, [stats, lastStats])
 
   const container = {
     hidden: { opacity: 0 },
@@ -238,6 +268,23 @@ export default function Dashboard() {
             </div>
           </motion.div>
 
+          {/* Forecast card */}
+          {forecast && (
+            <motion.div variants={itemAnim} className="bg-gradient-to-r from-brand-500 to-brand-600 rounded-xl p-4 sm:p-5 text-white">
+              <div className="flex items-center gap-2 mb-2">
+                <Brain size={15} className="text-white/80" />
+                <span className="text-xs font-semibold text-white/80 uppercase tracking-wider">IA Predictiva</span>
+              </div>
+              <p className="text-sm text-white/80">Al ritmo actual, en <strong>6 meses</strong> tendrás</p>
+              <p className="text-2xl font-bold tracking-tight mt-1">{fmt(forecast.in6Months, cur)}</p>
+              <div className="flex gap-4 mt-2 text-xs text-white/70">
+                <span>Por mes: {fmt(forecast.monthly, cur)}</span>
+                <span>|</span>
+                <span>Por año: {fmt(forecast.yearly, cur)}</span>
+              </div>
+            </motion.div>
+          )}
+
           {/* Recent transactions */}
           <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
             <div className="flex items-center justify-between mb-3">
@@ -348,6 +395,14 @@ export default function Dashboard() {
                 <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-surface-lighter/30 border border-border">
                   <div className="w-7 h-7 rounded-lg bg-danger/10 flex items-center justify-center flex-shrink-0"><ArrowUpRight size={13} className="text-danger" /></div>
                   <div><p className="text-xs font-medium">Mayor gasto: {topExpense[0].name}</p><p className="text-[11px] text-text-muted mt-0.5">{fmt(topExpense[0].amount, cur)} este mes</p></div>
+                </div>
+              )}
+              {comparison && (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-surface-lighter/30 border border-border">
+                  <div className={`w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 ${comparison.up ? 'bg-danger/10' : 'bg-success/10'}`}>
+                    {comparison.up ? <TrendingDown size={13} className="text-danger" /> : <TrendingUp size={13} className="text-success" />}
+                  </div>
+                  <div><p className="text-xs font-medium">Comparativa mensual</p><p className="text-[11px] text-text-muted mt-0.5">Gastos {comparison.up ? 'subieron' : 'bajaron'} un {Math.abs(comparison.pct).toFixed(0)}% vs el mes anterior ({fmt(Math.abs(comparison.diff), cur)})</p></div>
                 </div>
               )}
               {state.aiPlan && (

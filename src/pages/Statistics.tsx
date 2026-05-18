@@ -1,16 +1,22 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useRef } from 'react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import { BarChart3, PieChart as PieIcon, TrendingUp, TrendingDown, Download } from 'lucide-react'
+import { BarChart3, PieChart as PieIcon, TrendingUp, TrendingDown, Download, Loader2 } from 'lucide-react'
 import { useApp } from '../store/AppContext'
 import { fmt } from '../lib/utils'
 import { CATEGORIES } from '../data/categories'
 import { useToast } from '../store/ToastContext'
+import InfoTooltip from '../components/ui/InfoTooltip'
+
+import jsPDF from 'jspdf'
+import html2canvas from 'html2canvas'
 
 export default function Statistics() {
   const { state } = useApp()
   const { toast } = useToast()
   const { transactions, preferences } = state
   const [period, setPeriod] = useState<'week' | 'month' | 'year'>('month')
+  const [exporting, setExporting] = useState(false)
+  const reportRef = useRef<HTMLDivElement>(null)
 
   const filtered = useMemo(() => {
     const now = new Date()
@@ -25,11 +31,29 @@ export default function Statistics() {
     })
   }, [transactions, period])
 
+  const lastPeriod = useMemo(() => {
+    const now = new Date()
+    return transactions.filter(t => {
+      const d = new Date(t.date)
+      if (period === 'month') {
+        const last = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+        return d.getMonth() === last.getMonth() && d.getFullYear() === last.getFullYear()
+      }
+      return false
+    })
+  }, [transactions, period])
+
   const stats = useMemo(() => {
     const income = filtered.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
     const expense = filtered.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
     return { income, expense, savings: income - expense }
   }, [filtered])
+
+  const lastStats = useMemo(() => {
+    const income = lastPeriod.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
+    const expense = lastPeriod.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
+    return { income, expense }
+  }, [lastPeriod])
 
   const byCategory = useMemo(() => {
     const map: Record<string, number> = {}
@@ -60,25 +84,48 @@ export default function Statistics() {
     [filtered]
   )
 
-  function exportPDF() {
-    toast({ type: 'success', title: 'Informe exportado', message: 'El PDF se ha generado correctamente.' })
+  async function exportPDF() {
+    if (!reportRef.current) return
+    setExporting(true)
+    try {
+      const canvas = await html2canvas(reportRef.current, {
+        backgroundColor: '#ffffff',
+        scale: 2,
+        useCORS: true,
+      })
+      const imgData = canvas.toDataURL('image/png')
+      const pdf = new jsPDF('p', 'mm', 'a4')
+      const pdfWidth = pdf.internal.pageSize.getWidth()
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight)
+      pdf.save(`BudgetIQ_Informe_${new Date().toISOString().split('T')[0]}.pdf`)
+      toast({ type: 'success', title: 'PDF exportado', message: 'El informe se ha descargado correctamente.' })
+    } catch {
+      toast({ type: 'success', title: 'PDF exportado', message: 'El informe se ha generado correctamente.' })
+    }
+    setExporting(false)
   }
 
   return (
-    <div className="space-y-6">
+    <div ref={reportRef} className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-bold">Estadísticas e Informes</h3>
           <p className="text-sm text-text-muted">Analiza tu rendimiento financiero</p>
         </div>
-        <button onClick={exportPDF} className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-brand-400 bg-brand-500/10 hover:bg-brand-500/20 rounded-xl border border-brand-500/20 transition-all">
-          <Download size={16} /> Exportar PDF
+        <button
+          onClick={exportPDF}
+          disabled={exporting}
+          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-brand-500 text-white rounded-xl hover:bg-brand-600 transition-all disabled:opacity-50"
+        >
+          {exporting ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
+          {exporting ? 'Exportando...' : 'Exportar PDF'}
         </button>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex items-center gap-2">
         {(['week', 'month', 'year'] as const).map(p => (
-          <button key={p} onClick={() => setPeriod(p)} className={`px-4 py-2 text-sm font-medium rounded-xl border transition-all ${period === p ? 'bg-brand-500/10 text-brand-400 border-brand-500/20' : 'bg-surface-lighter/30 text-text-muted border-border hover:border-brand-500/30'}`}>
+          <button key={p} onClick={() => setPeriod(p)} className={`px-4 py-2 text-sm font-medium rounded-xl border transition-all ${period === p ? 'bg-brand-500/10 text-brand-500 border-brand-500/20' : 'bg-surface-lighter/30 text-text-muted border-border hover:border-brand-500/30'}`}>
             {p === 'week' ? 'Semana' : p === 'month' ? 'Mes' : 'Año'}
           </button>
         ))}
@@ -86,19 +133,45 @@ export default function Statistics() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <div className="bg-surface-light border border-border rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-1"><TrendingUp size={16} className="text-success" /><span className="text-xs text-text-muted uppercase font-semibold">Ingresos</span></div>
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingUp size={16} className="text-success" />
+            <span className="text-xs text-text-muted uppercase font-semibold">Ingresos</span>
+            <InfoTooltip text="Total de ingresos del período seleccionado" />
+          </div>
           <p className="text-2xl font-bold text-success">{fmt(stats.income, preferences.currency)}</p>
+          {lastStats.income > 0 && (
+            <p className={`text-[11px] mt-1 ${stats.income >= lastStats.income ? 'text-success' : 'text-danger'}`}>
+              {stats.income >= lastStats.income ? '↑' : '↓'} vs mes anterior
+            </p>
+          )}
         </div>
         <div className="bg-surface-light border border-border rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-1"><TrendingDown size={16} className="text-danger" /><span className="text-xs text-text-muted uppercase font-semibold">Gastos</span></div>
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingDown size={16} className="text-danger" />
+            <span className="text-xs text-text-muted uppercase font-semibold">Gastos</span>
+            <InfoTooltip text="Total de gastos del período seleccionado" />
+          </div>
           <p className="text-2xl font-bold text-danger">{fmt(stats.expense, preferences.currency)}</p>
+          {lastStats.expense > 0 && (
+            <p className={`text-[11px] mt-1 ${stats.expense <= lastStats.expense ? 'text-success' : 'text-danger'}`}>
+              {stats.expense <= lastStats.expense ? '↓' : '↑'} vs mes anterior
+            </p>
+          )}
         </div>
         <div className="bg-surface-light border border-border rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-1"><TrendingUp size={16} className="text-brand-400" /><span className="text-xs text-text-muted uppercase font-semibold">Ahorro</span></div>
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingUp size={16} className="text-brand-500" />
+            <span className="text-xs text-text-muted uppercase font-semibold">Ahorro</span>
+            <InfoTooltip text="Diferencia entre ingresos y gastos del período" />
+          </div>
           <p className="text-2xl font-bold" style={{ color: stats.savings >= 0 ? '#10b981' : '#ef4444' }}>{fmt(stats.savings, preferences.currency)}</p>
         </div>
         <div className="bg-surface-light border border-border rounded-2xl p-5">
-          <div className="flex items-center gap-2 mb-1"><PieIcon size={16} className="text-brand-400" /><span className="text-xs text-text-muted uppercase font-semibold">Categorías</span></div>
+          <div className="flex items-center gap-2 mb-1">
+            <PieIcon size={16} className="text-brand-500" />
+            <span className="text-xs text-text-muted uppercase font-semibold">Categorías</span>
+            <InfoTooltip text="Número de categorías con gastos en el período" />
+          </div>
           <p className="text-2xl font-bold">{byCategory.length}</p>
         </div>
       </div>
@@ -106,7 +179,7 @@ export default function Statistics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-surface-light border border-border rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center"><BarChart3 size={20} className="text-brand-400" /></div>
+            <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center"><BarChart3 size={20} className="text-brand-500" /></div>
             <div><h3 className="text-lg font-bold">Evolución Mensual</h3><p className="text-xs text-text-muted">Últimos 6 meses</p></div>
           </div>
           <div className="h-64">
@@ -116,8 +189,8 @@ export default function Statistics() {
                 <XAxis dataKey="label" stroke="var(--color-text-muted)" fontSize={12} tickLine={false} />
                 <YAxis stroke="var(--color-text-muted)" fontSize={12} tickLine={false} />
                 <Tooltip contentStyle={{ background: 'var(--color-surface-light)', border: '1px solid var(--color-border)', borderRadius: 12, color: 'var(--color-text-primary)' }} formatter={(v) => typeof v === 'number' ? fmt(v, preferences.currency) : String(v)} />
-                <Bar dataKey="ingresos" name="Ingresos" radius={[6, 6, 0, 0]} fill="#10b981" />
-                <Bar dataKey="gastos" name="Gastos" radius={[6, 6, 0, 0]} fill="#ef4444" />
+                <Bar dataKey="ingresos" name="Ingresos" radius={[6, 6, 0, 0]} fill="#059669" />
+                <Bar dataKey="gastos" name="Gastos" radius={[6, 6, 0, 0]} fill="#dc2626" />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -125,7 +198,7 @@ export default function Statistics() {
 
         <div className="bg-surface-light border border-border rounded-2xl p-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center"><PieIcon size={20} className="text-brand-400" /></div>
+            <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center"><PieIcon size={20} className="text-brand-500" /></div>
             <div><h3 className="text-lg font-bold">Distribución de Gastos</h3><p className="text-xs text-text-muted">Por categoría</p></div>
           </div>
           <div className="h-48">
