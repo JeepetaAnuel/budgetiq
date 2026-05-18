@@ -1,7 +1,8 @@
 import { useState, useMemo } from 'react'
-import { TrendingUp, TrendingDown, PiggyBank, Wallet, Building, Link2, Unlink, Settings, Target, Lightbulb, Activity, Brain, ArrowLeftRight, ArrowUpRight, ChevronRight } from 'lucide-react'
+import { TrendingUp, TrendingDown, PiggyBank, Wallet, Building, Settings, Target, Brain, ArrowUpRight, ChevronRight } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
-import StatCard from '../components/ui/StatCard'
+import { motion } from 'framer-motion'
+
 import BudgetCard from '../components/finance/BudgetCard'
 import TransactionRow from '../components/finance/TransactionRow'
 import BankConnector from '../components/finance/BankConnector'
@@ -36,7 +37,7 @@ export default function Dashboard() {
   }, [monthTx])
 
   const healthScore = useMemo(() => {
-    if (preferences.monthlyIncome <= 0) return { score: 0, label: 'Sin datos', color: 'text-text-muted' }
+    if (preferences.monthlyIncome <= 0) return { score: 0, label: 'Sin datos', color: 'text-text-muted', ring: '#94a3b8' }
     let score = 70
     if (stats.rate >= 20) score += 15
     else if (stats.rate >= 10) score += 8
@@ -46,8 +47,9 @@ export default function Dashboard() {
     if (preferences.bank) score += 5
     score = Math.max(0, Math.min(100, score))
     const label = score >= 85 ? 'Excelente' : score >= 70 ? 'Buena' : score >= 50 ? 'Regular' : 'Precaria'
-    const color = score >= 85 ? 'text-success' : score >= 70 ? 'text-brand-400' : score >= 50 ? 'text-warning' : 'text-danger'
-    return { score, label, color }
+    const color = score >= 85 ? 'text-success' : score >= 70 ? 'text-brand-500' : score >= 50 ? 'text-warning' : 'text-danger'
+    const ring = score >= 85 ? '#059669' : score >= 70 ? '#1e3a5f' : score >= 50 ? '#d97706' : '#dc2626'
+    return { score, label, color, ring }
   }, [stats, budgets, preferences])
 
   const topExpense = useMemo(() => {
@@ -92,269 +94,290 @@ export default function Dashboard() {
   const totalBudget = budgets.reduce((s, b) => s + b.limit, 0)
   const bank = preferences.bank
   const bankMeta = bank ? BANKS.find(b => b.id === bank.bankId) : null
+  const hasIncome = preferences.monthlyIncome > 0
+
+  const container = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.06 } },
+  } as const
+  const itemAnim = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' as const } },
+  } as const
 
   return (
-    <div className="space-y-5 sm:space-y-6">
-      {/* Hero card */}
-      {preferences.monthlyIncome > 0 && (
-        <div className="relative overflow-hidden bg-gradient-to-br from-brand-600 via-brand-700 to-indigo-900 rounded-2xl p-5 sm:p-8 text-white">
-          <div className="absolute top-0 right-0 w-72 h-72 bg-white/5 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-brand-400/10 rounded-full blur-3xl" />
-          <div className="relative flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4">
-            <div className="space-y-1">
-              <p className="text-sm font-medium text-white/70">Saldo disponible</p>
-              <p className="text-3xl sm:text-4xl font-bold tracking-tight">{fmt(stats.savings, cur)}</p>
-              <div className="flex items-center gap-4 mt-2">
-                <span className="text-sm text-white/80 flex items-center gap-1.5">
-                  <TrendingUp size={14} /> +{fmt(stats.income, cur)}
-                </span>
-                <span className="text-sm text-white/80 flex items-center gap-1.5">
-                  <TrendingDown size={14} /> -{fmt(stats.expense, cur)}
-                </span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="text-right">
-                <p className="text-xs text-white/70">Tasa de ahorro</p>
-                <p className="text-2xl font-bold">{stats.rate.toFixed(0)}%</p>
-              </div>
-              <div className="w-16 h-16 relative">
-                <svg className="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
-                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="3" />
-                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="white" strokeWidth="3" strokeDasharray={`${healthScore.score} ${100 - healthScore.score}`} strokeLinecap="round" />
-                </svg>
-                <span className="absolute inset-0 flex items-center justify-center text-xs font-bold">{healthScore.score}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Income setup banner */}
-      {preferences.monthlyIncome <= 0 && (
-        <div className="bg-gradient-to-r from-amber-500/10 to-orange-500/5 border border-amber-500/20 rounded-2xl p-5 flex items-start gap-4">
-          <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-            <Settings size={20} className="text-amber-400" />
-          </div>
-          <div className="flex-1">
-            <p className="text-sm font-semibold">Configura tus ingresos</p>
-            <p className="text-xs text-text-muted mt-1">Define tu ingreso mensual para que BudgetIQ pueda optimizar tus finanzas.</p>
-          </div>
-          <div className="flex gap-2 flex-shrink-0">
-            <button onClick={() => setBankOpen(true)} className="flex items-center gap-2 px-4 py-2.5 bg-brand-500/10 hover:bg-brand-500/20 text-brand-400 text-sm font-medium rounded-xl border border-brand-500/20 transition-all">
-              <Link2 size={16} /> Conectar banco
-            </button>
-            <button onClick={() => navigate('/settings')} className="flex items-center gap-2 px-4 py-2.5 bg-surface-lighter/50 hover:bg-surface-lighter text-sm font-medium rounded-xl border border-border transition-all">
-              <Settings size={16} /> Manual
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Bank connection status */}
-      {bank && bankMeta && (
-        <div className="bg-gradient-to-r from-brand-500/5 to-success/5 border border-brand-500/10 rounded-2xl p-5 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl flex items-center justify-center" style={{ backgroundColor: `${bankMeta.color}15` }}>
-              <Icon name={bankMeta.logo} size={24} style={{ color: bankMeta.color }} />
-            </div>
+    <motion.div variants={container} initial="hidden" animate="show" className="space-y-5">
+      {/* ── Top metrics bar ── */}
+      <motion.div variants={itemAnim} className="grid grid-cols-2 md:grid-cols-5 gap-3">
+        <div className="col-span-2 md:col-span-5 flex flex-wrap items-center justify-between gap-3 p-4 bg-surface-light border border-border rounded-xl">
+          <div className="flex items-center gap-6 flex-wrap">
             <div>
-              <p className="text-sm font-semibold">{bank.bankName} · Cuenta conectada</p>
-              <p className="text-xs text-text-muted mt-0.5">
-                {bank.accountNumber.slice(0, 4)} **** {bank.accountNumber.slice(-4)}
-                <span className="ml-3">Nómina: <span className="text-success font-medium">{fmt(preferences.monthlyIncome, cur)}/mes</span></span>
-              </p>
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Balance</p>
+              <p className="text-xl font-bold tracking-tight">{fmt(stats.savings, cur)}</p>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-border" />
+            <div>
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Ingresos</p>
+              <p className="text-base font-semibold text-success">{fmt(stats.income, cur)}</p>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-border" />
+            <div>
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Gastos</p>
+              <p className="text-base font-semibold text-danger">{fmt(stats.expense, cur)}</p>
+            </div>
+            <div className="hidden sm:block w-px h-8 bg-border" />
+            <div>
+              <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Ahorro</p>
+              <p className="text-base font-semibold">{stats.rate.toFixed(0)}%</p>
             </div>
           </div>
-          <button onClick={() => setBank(null)} className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-text-muted hover:text-danger hover:bg-danger/10 rounded-xl border border-border hover:border-danger/20 transition-all">
-            <Unlink size={14} /> Desvincular
-          </button>
-        </div>
-      )}
-
-      {/* Connect bank prompt */}
-      {!bank && preferences.monthlyIncome > 0 && (
-        <button onClick={() => setBankOpen(true)} className="w-full flex items-center justify-between p-4 lg:p-5 bg-gradient-to-r from-surface-light to-surface-lighter/30 hover:from-brand-500/5 hover:to-brand-600/5 border border-border hover:border-brand-500/30 rounded-2xl transition-all group">
-          <div className="flex items-center gap-3 sm:gap-4">
-            <div className="w-10 h-10 lg:w-12 lg:h-12 rounded-xl bg-gradient-to-br from-brand-400 to-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/20">
-              <Building size={20} className="text-white" />
-            </div>
-            <div className="text-left">
-              <p className="text-sm sm:text-base font-semibold">Conecta tu banco</p>
-              <p className="text-xs sm:text-sm text-text-muted">Importa transacciones automáticamente con la IA</p>
-            </div>
-          </div>
-          <ChevronRight size={20} className="text-text-muted group-hover:text-brand-400 group-hover:translate-x-1 transition-all" />
-        </button>
-      )}
-
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
-        <StatCard title="Ingresos" value={fmt(stats.income, cur)} icon={<TrendingUp size={18} />} accent="success" />
-        <StatCard title="Gastos" value={fmt(stats.expense, cur)} icon={<TrendingDown size={18} />} accent="danger" />
-        <StatCard title="Ahorro" value={fmt(stats.savings, cur)} icon={<PiggyBank size={18} />} />
-        <StatCard title="Presupuesto" value={fmt(totalBudget, cur)} icon={<Wallet size={18} />} />
-        <div className="col-span-2 lg:col-span-1 bg-surface-light border border-border rounded-2xl p-4 sm:p-5 relative group">
-          <div className={`absolute -inset-0.5 bg-gradient-to-r from-brand-500/20 to-brand-600/20 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-          <div className="relative">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-semibold text-text-muted uppercase tracking-wider">Salud Financiera</span>
-              <div className="w-10 h-10 rounded-xl bg-brand-500/10 text-brand-400 border border-brand-500/20 flex items-center justify-center">
-                <Activity size={18} />
-              </div>
-            </div>
-            <div className="flex items-end gap-2">
-              <span className={`text-2xl font-bold ${healthScore.color}`}>{healthScore.score}</span>
-              <span className="text-sm text-text-muted mb-1">/100</span>
-            </div>
-            <p className={`text-xs font-semibold mt-1 ${healthScore.color}`}>{healthScore.label}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Weekly trend chart + Top expenses */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 sm:gap-6">
-        <div className="lg:col-span-2 bg-surface-light border border-border rounded-2xl p-5 sm:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center">
-                <Activity size={20} className="text-brand-400" />
-              </div>
+          <div className="flex items-center gap-3">
+            {!hasIncome && (
+              <button onClick={() => navigate('/settings')} className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-500 text-white text-xs font-medium rounded-lg hover:bg-brand-600 transition-all">
+                <Settings size={13} /> Configurar
+              </button>
+            )}
+            <div className="flex items-center gap-2">
+              <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-surface-lighter)" strokeWidth="3" />
+                <circle cx="18" cy="18" r="15.5" fill="none" stroke={healthScore.ring} strokeWidth="3" strokeDasharray={`${healthScore.score} ${100 - healthScore.score}`} strokeLinecap="round" />
+              </svg>
               <div>
-                <h3 className="text-base font-bold">Tendencia Semanal</h3>
+                <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Salud</p>
+                <p className={`text-sm font-bold ${healthScore.color}`}>{healthScore.score}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── Setup / Bank connect row ── */}
+      {(!hasIncome || !bank) && (
+        <motion.div variants={itemAnim} className="flex flex-wrap gap-3">
+          {!hasIncome && (
+            <div className="flex-1 min-w-[240px] flex items-center gap-3 p-3.5 bg-surface-light border border-border rounded-xl">
+              <div className="w-9 h-9 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0">
+                <Settings size={16} className="text-brand-500" />
+              </div>
+              <p className="text-sm flex-1">Configura tu ingreso mensual para activar la IA</p>
+              <button onClick={() => navigate('/settings')} className="px-3 py-1.5 bg-brand-500 text-white text-xs font-medium rounded-lg hover:bg-brand-600 transition-all">Ir</button>
+            </div>
+          )}
+          {!bank && hasIncome && (
+            <button onClick={() => setBankOpen(true)} className="flex-1 min-w-[200px] flex items-center gap-3 p-3.5 bg-surface-light border border-border rounded-xl hover:border-brand-500/30 transition-all group">
+              <div className="w-9 h-9 rounded-lg bg-surface-lighter flex items-center justify-center flex-shrink-0">
+                <Building size={16} className="text-text-muted group-hover:text-brand-500 transition-colors" />
+              </div>
+              <span className="text-sm flex-1 text-left">Conecta tu banco</span>
+              <ChevronRight size={14} className="text-text-muted group-hover:text-brand-500 group-hover:translate-x-0.5 transition-all" />
+            </button>
+          )}
+          {bank && bankMeta && (
+            <div className="flex-1 min-w-[240px] flex items-center gap-3 p-3.5 bg-surface-light border border-border rounded-xl">
+              <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ backgroundColor: `${bankMeta.color}15` }}>
+                <Icon name={bankMeta.logo} size={18} style={{ color: bankMeta.color }} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{bank.bankName}</p>
+                <p className="text-xs text-text-muted truncate">{bank.accountNumber.slice(0,4)} **** {bank.accountNumber.slice(-4)}</p>
+              </div>
+              <button onClick={() => setBank(null)} className="px-2.5 py-1 text-xs font-medium text-text-muted hover:text-danger rounded-lg hover:bg-danger/5 transition-all">×</button>
+            </div>
+          )}
+        </motion.div>
+      )}
+
+      {/* ── Main 2-column grid ── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+        {/* ──────────── LEFT COLUMN ──────────── */}
+        <div className="lg:col-span-7 space-y-5">
+
+          {/* KPI mini-cards row */}
+          <motion.div variants={itemAnim} className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'Ingresos', value: fmt(stats.income, cur), icon: TrendingUp, color: 'text-success', bg: 'bg-success/5' },
+              { label: 'Gastos', value: fmt(stats.expense, cur), icon: TrendingDown, color: 'text-danger', bg: 'bg-danger/5' },
+              { label: 'Ahorro', value: fmt(stats.savings, cur), icon: PiggyBank, color: 'text-brand-500', bg: 'bg-brand-500/5' },
+              { label: 'Presupuesto', value: fmt(totalBudget, cur), icon: Wallet, color: 'text-brand-500', bg: 'bg-brand-500/5' },
+            ].map((k, i) => (
+              <div key={i} className="bg-surface-light border border-border rounded-xl p-3.5">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">{k.label}</span>
+                  <div className={`w-7 h-7 rounded-lg ${k.bg} flex items-center justify-center`}>
+                    <k.icon size={14} className={k.color} />
+                  </div>
+                </div>
+                <p className="text-base font-bold tracking-tight">{k.value}</p>
+              </div>
+            ))}
+          </motion.div>
+
+          {/* Weekly trend chart */}
+          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-semibold">Tendencia Semanal</h3>
                 <p className="text-xs text-text-muted">Ingresos vs gastos</p>
               </div>
             </div>
-          </div>
-          <div className="h-60 sm:h-64">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={weeklyTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" />
-                <XAxis dataKey="label" stroke="var(--color-text-muted)" fontSize={12} tickLine={false} />
-                <YAxis stroke="var(--color-text-muted)" fontSize={12} tickLine={false} />
-                <Tooltip
-                  contentStyle={{ background: 'var(--color-surface-light)', border: '1px solid var(--color-border)', borderRadius: 12, color: 'var(--color-text-primary)' }}
-                  formatter={(v) => typeof v === 'number' ? [fmt(v, cur)] : [String(v)]}
-                />
-                <Bar dataKey="ingresos" name="Ingresos" radius={[6, 6, 0, 0]} fill="#10b981" />
-                <Bar dataKey="gastos" name="Gastos" radius={[6, 6, 0, 0]} fill="#ef4444" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
+            <div className="h-52 sm:h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={weeklyTrend}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--color-border)" strokeOpacity={0.5} />
+                  <XAxis dataKey="label" stroke="var(--color-text-muted)" fontSize={11} tickLine={false} axisLine={false} />
+                  <YAxis stroke="var(--color-text-muted)" fontSize={11} tickLine={false} axisLine={false} />
+                  <Tooltip
+                    contentStyle={{ background: 'var(--color-surface-light)', border: '1px solid var(--color-border)', borderRadius: 10, color: 'var(--color-text-primary)', fontSize: 12 }}
+                    formatter={(v) => typeof v === 'number' ? [fmt(v, cur)] : [String(v)]}
+                  />
+                  <Bar dataKey="ingresos" name="Ingresos" radius={[4, 4, 0, 0]} fill="#059669" maxBarSize={32} />
+                  <Bar dataKey="gastos" name="Gastos" radius={[4, 4, 0, 0]} fill="#dc2626" maxBarSize={32} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </motion.div>
+
+          {/* Recent transactions */}
+          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-sm font-semibold">Transacciones Recientes</h3>
+                <p className="text-xs text-text-muted">Últimos movimientos</p>
+              </div>
+              <button onClick={() => navigate('/transactions')} className="text-xs font-medium text-brand-500 hover:text-brand-600 transition-colors flex items-center gap-1">
+                Ver todas <ChevronRight size={12} />
+              </button>
+            </div>
+            <div className="divide-y divide-border -mx-1">
+              {recent.map(t => <TransactionRow key={t.id} transaction={t} />)}
+              {recent.length === 0 && (
+                <p className="text-sm text-text-muted text-center py-8">No hay transacciones recientes.</p>
+              )}
+            </div>
+          </motion.div>
         </div>
 
-        <div className="bg-surface-light border border-border rounded-2xl p-5 sm:p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center">
-              <Target size={20} className="text-brand-400" />
-            </div>
-            <div>
-              <h3 className="text-base font-bold">Distribución</h3>
-              <p className="text-xs text-text-muted">Gastos por categoría</p>
-            </div>
-          </div>
-          <div className="h-44 sm:h-48">
-            <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
-                <Pie data={pieData} cx="50%" cy="50%" innerRadius={40} outerRadius={65} paddingAngle={3} dataKey="value">
-                  {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
-                </Pie>
-                <Tooltip contentStyle={{ background: 'var(--color-surface-light)', border: '1px solid var(--color-border)', borderRadius: 12, color: 'var(--color-text-primary)' }} formatter={(v) => typeof v === 'number' ? fmt(v, cur) : String(v)} />
-              </PieChart>
-            </ResponsiveContainer>
-          </div>
-          <div className="flex flex-wrap gap-2 mt-3">
-            {pieData.slice(0, 5).map(c => (
-              <span key={c.name} className="flex items-center gap-1.5 text-xs text-text-muted">
-                <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: c.color }} />
-                {c.name}
-              </span>
-            ))}
-          </div>
-        </div>
-      </div>
+        {/* ──────────── RIGHT COLUMN ──────────── */}
+        <div className="lg:col-span-5 space-y-5">
 
-      {/* Insights + Active budgets */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 sm:gap-6">
-        <div className="bg-surface-light border border-border rounded-2xl p-5 sm:p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">
-              <Lightbulb size={20} className="text-amber-400" />
+          {/* Health Score card */}
+          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-sm font-semibold">Salud Financiera</h3>
+                <p className="text-xs text-text-muted">Health Score general</p>
+              </div>
+              <div className="relative w-14 h-14">
+                <svg className="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-surface-lighter)" strokeWidth="3.5" />
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke={healthScore.ring} strokeWidth="3.5" strokeDasharray={`${healthScore.score} ${100 - healthScore.score}`} strokeLinecap="round" style={{ transition: 'stroke-dasharray 0.6s ease' }} />
+                </svg>
+                <span className={`absolute inset-0 flex items-center justify-center text-sm font-bold ${healthScore.color}`}>{healthScore.score}</span>
+              </div>
             </div>
-            <div>
-              <h3 className="text-base font-bold">Insights Rápidos</h3>
-              <p className="text-xs text-text-muted">Basados en tus datos financieros</p>
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex-1 h-2 bg-surface-lighter rounded-full overflow-hidden">
+                <div className="h-full rounded-full transition-all duration-500" style={{ width: `${healthScore.score}%`, background: healthScore.ring }} />
+              </div>
+              <span className={`text-xs font-semibold ${healthScore.color}`}>{healthScore.label}</span>
             </div>
-          </div>
-          <div className="space-y-3">
-            {stats.rate >= 15 ? (
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-success/5 border border-success/10">
-                <div className="w-8 h-8 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0"><Target size={16} className="text-success" /></div>
-                <div><p className="text-sm font-medium">Buena tasa de ahorro</p><p className="text-xs text-text-muted mt-0.5">Estás ahorrando un {stats.rate.toFixed(0)}% de tus ingresos. ¡Sigue así!</p></div>
-              </div>
-            ) : stats.rate <= 0 ? (
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-danger/5 border border-danger/10">
-                <div className="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center flex-shrink-0"><TrendingDown size={16} className="text-danger" /></div>
-                <div><p className="text-sm font-medium">Gastos superan ingresos</p><p className="text-xs text-text-muted mt-0.5">Revisa tus presupuestos para equilibrar tus finanzas.</p></div>
-              </div>
-            ) : (
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-brand-500/5 border border-brand-500/10">
-                <div className="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0"><TrendingUp size={16} className="text-brand-400" /></div>
-                <div><p className="text-sm font-medium">Ahorro moderado</p><p className="text-xs text-text-muted mt-0.5">Tu tasa de ahorro es del {stats.rate.toFixed(0)}%. Intenta llegar al 15-20%.</p></div>
-              </div>
-            )}
-            {topExpense.length > 0 && (
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-surface-lighter/30 border border-border">
-                <div className="w-8 h-8 rounded-lg bg-danger/10 flex items-center justify-center flex-shrink-0"><ArrowUpRight size={16} className="text-danger" /></div>
-                <div><p className="text-sm font-medium">Mayor gasto del mes</p><p className="text-xs text-text-muted mt-0.5">{topExpense[0].name}: {fmt(topExpense[0].amount, cur)}</p></div>
-              </div>
-            )}
-            {state.aiPlan && (
-              <div className="flex items-start gap-3 p-3 rounded-xl bg-brand-500/5 border border-brand-500/10">
-                <div className="w-8 h-8 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0"><Brain size={16} className="text-brand-400" /></div>
-                <div><p className="text-sm font-medium">Plan IA disponible</p><p className="text-xs text-text-muted mt-0.5">Revisa las recomendaciones de tu Optimizador Inteligente.</p></div>
-              </div>
-            )}
-          </div>
-        </div>
+            <div className="grid grid-cols-3 gap-2 text-center text-[11px]">
+              <div className="p-2 rounded-lg bg-success/5"><p className="font-semibold text-success">{budgets.filter(b => getStatus(progress(b.spent, b.limit)) === 'safe').length}</p><p className="text-text-muted mt-0.5">Seguros</p></div>
+              <div className="p-2 rounded-lg bg-warning/5"><p className="font-semibold text-warning">{budgets.filter(b => getStatus(progress(b.spent, b.limit)) === 'warning').length}</p><p className="text-text-muted mt-0.5">Riesgo</p></div>
+              <div className="p-2 rounded-lg bg-danger/5"><p className="font-semibold text-danger">{budgets.filter(b => getStatus(progress(b.spent, b.limit)) === 'danger').length}</p><p className="text-text-muted mt-0.5">Excedidos</p></div>
+            </div>
+          </motion.div>
 
-        <div className="bg-surface-light border border-border rounded-2xl p-5 sm:p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-brand-500/10 flex items-center justify-center"><Wallet size={20} className="text-brand-400" /></div>
-              <div><h3 className="text-base font-bold">Presupuestos</h3><p className="text-xs text-text-muted">{budgets.filter(b => b.spent <= b.limit).length}/{budgets.length} cumplidos</p></div>
+          {/* Distribution pie */}
+          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-sm font-semibold">Distribución</h3>
+                <p className="text-xs text-text-muted">Gastos por categoría</p>
+              </div>
             </div>
-            <button onClick={() => navigate('/budgets')} className="text-xs font-medium text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-1">Ver todos <ChevronRight size={12} /></button>
-          </div>
-          <div className="space-y-3">
-            {budgets.slice(0, 4).map(b => (
-              <BudgetCard key={b.category} budget={b} currency={cur} />
-            ))}
-            {budgets.length === 0 && (
-              <p className="text-sm text-text-muted text-center py-6">No hay presupuestos activos. Crea uno desde la sección Presupuestos.</p>
-            )}
-          </div>
-        </div>
-      </div>
+            <div className="flex items-center gap-4">
+              <div className="h-32 w-32 flex-shrink-0">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie data={pieData} cx="50%" cy="50%" innerRadius={30} outerRadius={52} paddingAngle={2} dataKey="value">
+                      {pieData.map((e, i) => <Cell key={i} fill={e.color} />)}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex-1 min-w-0 space-y-1.5">
+                {pieData.slice(0, 6).map(c => (
+                  <div key={c.name} className="flex items-center gap-2 text-xs">
+                    <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: c.color }} />
+                    <span className="text-text-muted truncate flex-1">{c.name}</span>
+                    <span className="font-medium">{fmt(c.value, cur)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
 
-      {/* Recent transactions */}
-      <div className="bg-surface-light border border-border rounded-2xl p-5 sm:p-6">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-surface-lighter flex items-center justify-center"><ArrowLeftRight size={20} className="text-text-muted" /></div>
-            <div><h3 className="text-base font-bold">Transacciones Recientes</h3><p className="text-xs text-text-muted">Últimos movimientos</p></div>
-          </div>
-          <button onClick={() => navigate('/transactions')} className="text-xs font-medium text-brand-400 hover:text-brand-300 transition-colors flex items-center gap-1">Ver todas <ChevronRight size={12} /></button>
-        </div>
-        <div className="divide-y divide-border">
-          {recent.map(t => <TransactionRow key={t.id} transaction={t} />)}
-          {recent.length === 0 && (
-            <p className="text-sm text-text-muted text-center py-6">No hay transacciones recientes.</p>
-          )}
+          {/* Insights + Budgets combined */}
+          <motion.div variants={itemAnim} className="bg-surface-light border border-border rounded-xl p-4 sm:p-5">
+            <div className="flex items-center justify-between mb-3">
+              <div>
+                <h3 className="text-sm font-semibold">Insights & Presupuestos</h3>
+                <p className="text-xs text-text-muted">Alertas inteligentes</p>
+              </div>
+            </div>
+            <div className="space-y-2 mb-3">
+              {stats.rate >= 15 ? (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-success/5 border border-success/10">
+                  <div className="w-7 h-7 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0"><Target size={13} className="text-success" /></div>
+                  <div><p className="text-xs font-medium">Buena tasa de ahorro ({stats.rate.toFixed(0)}%)</p><p className="text-[11px] text-text-muted mt-0.5">Sigue así, vas por buen camino</p></div>
+                </div>
+              ) : stats.rate <= 0 ? (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-danger/5 border border-danger/10">
+                  <div className="w-7 h-7 rounded-lg bg-danger/10 flex items-center justify-center flex-shrink-0"><TrendingDown size={13} className="text-danger" /></div>
+                  <div><p className="text-xs font-medium">Gastos superan ingresos</p><p className="text-[11px] text-text-muted mt-0.5">Revisa tus presupuestos</p></div>
+                </div>
+              ) : (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-brand-500/5 border border-brand-500/10">
+                  <div className="w-7 h-7 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0"><TrendingUp size={13} className="text-brand-500" /></div>
+                  <div><p className="text-xs font-medium">Ahorro moderado ({stats.rate.toFixed(0)}%)</p><p className="text-[11px] text-text-muted mt-0.5">Intenta llegar al 15-20%</p></div>
+                </div>
+              )}
+              {topExpense.length > 0 && (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-surface-lighter/30 border border-border">
+                  <div className="w-7 h-7 rounded-lg bg-danger/10 flex items-center justify-center flex-shrink-0"><ArrowUpRight size={13} className="text-danger" /></div>
+                  <div><p className="text-xs font-medium">Mayor gasto: {topExpense[0].name}</p><p className="text-[11px] text-text-muted mt-0.5">{fmt(topExpense[0].amount, cur)} este mes</p></div>
+                </div>
+              )}
+              {state.aiPlan && (
+                <div className="flex items-start gap-2.5 p-2.5 rounded-lg bg-brand-500/5 border border-brand-500/10">
+                  <div className="w-7 h-7 rounded-lg bg-brand-500/10 flex items-center justify-center flex-shrink-0"><Brain size={13} className="text-brand-500" /></div>
+                  <div><p className="text-xs font-medium">Plan IA disponible</p><p className="text-[11px] text-text-muted mt-0.5">Revisa las recomendaciones</p></div>
+                </div>
+              )}
+            </div>
+            <div className="pt-3 border-t border-border">
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-xs font-semibold text-text-muted uppercase tracking-wider">Presupuestos</p>
+                <button onClick={() => navigate('/budgets')} className="text-xs font-medium text-brand-500 hover:text-brand-600 flex items-center gap-1">
+                  Ver todos <ChevronRight size={11} />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {budgets.slice(0, 3).map(b => (
+                  <BudgetCard key={b.category} budget={b} currency={cur} />
+                ))}
+                {budgets.length === 0 && (
+                  <p className="text-xs text-text-muted text-center py-4">No hay presupuestos activos.</p>
+                )}
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
       <BankConnector open={bankOpen} onClose={() => setBankOpen(false)} />
-    </div>
+    </motion.div>
   )
 }
