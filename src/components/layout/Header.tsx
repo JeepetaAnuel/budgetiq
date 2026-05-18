@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { useMemo } from 'react'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Sparkles, TrendingUp, Bell, Wallet, LogIn } from 'lucide-react'
+import { Sparkles, Bell, Wallet, LogIn } from 'lucide-react'
 import { useApp } from '../../store/AppContext'
 import { useAuth } from '../../store/AuthContext'
 import { fmt } from '../../lib/utils'
@@ -39,55 +39,68 @@ export default function Header() {
       .reduce((s, t) => s + t.amount, 0)
   }, [state.transactions])
 
+  const monthIncome = useMemo(() => {
+    const now = new Date()
+    return state.transactions
+      .filter(t => {
+        const d = new Date(t.date)
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && t.type === 'income'
+      })
+      .reduce((s, t) => s + t.amount, 0)
+  }, [state.transactions])
+
   const alertCount = state.budgets.filter(b => b.spent > b.limit * 0.8).length
 
   return (
     <header className="sticky top-0 z-20 bg-surface/80 backdrop-blur-xl border-b border-border">
-      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-4">
+      <div className="flex items-center justify-between px-4 sm:px-6 lg:px-8 py-3 lg:py-3.5">
         <div className="min-w-0">
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg sm:text-xl font-bold tracking-tight truncate">{page.title}</h2>
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-base sm:text-lg font-semibold tracking-tight truncate text-text-primary">{page.title}</h2>
             {isAI && (
-              <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-brand-500/10 text-brand-400 text-xs font-semibold rounded-full border border-brand-500/20 whitespace-nowrap">
-                <Sparkles size={12} /> IA ACTIVA
+              <span className="flex items-center gap-1 px-2 py-0.5 bg-brand-50 text-brand-500 text-[11px] font-medium rounded-md border border-brand-200">
+                <Sparkles size={11} /> IA
               </span>
             )}
           </div>
-          <p className="text-xs sm:text-sm text-text-muted mt-0.5 capitalize">
+          <p className="text-xs sm:text-sm text-text-muted mt-0.5">
             {format(new Date(), "EEEE, d 'de' MMMM yyyy", { locale: es })}
           </p>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          {isGuest && (
-            <button onClick={() => navigate('/login')} className="flex items-center gap-1.5 px-3 py-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 text-xs font-semibold hover:bg-amber-500/20 transition-all">
-              <LogIn size={14} /> <span className="hidden sm:inline">Inicia sesión</span>
-            </button>
-          )}
-
           {alertCount > 0 && (
-            <div className="relative flex items-center gap-1.5 px-3 py-2 bg-amber-500/10 text-amber-400 rounded-xl border border-amber-500/20 text-xs font-semibold">
-              <Bell size={14} />
-              <span className="hidden sm:inline">{alertCount} alertas</span>
+            <div className="flex items-center gap-1.5 px-2.5 py-1.5 bg-brand-50 text-brand-500 rounded-lg text-xs font-medium border border-brand-200">
+              <Bell size={13} />
+              <span>{alertCount} alertas</span>
             </div>
           )}
 
-          <div className="hidden sm:flex items-center gap-2 px-3 py-2 bg-surface-lighter/50 rounded-xl border border-border">
-            <Wallet size={15} className="text-text-muted" />
-            <span className="text-xs text-text-muted">Mes:</span>
-            <span className="text-xs font-bold text-danger">{fmt(monthExpense, state.preferences.currency)}</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-surface-lighter/60 rounded-lg border border-border">
+            <Wallet size={14} className="text-text-muted" />
+            <span className="text-xs text-text-muted">Gastos:</span>
+            <span className="text-xs font-semibold text-danger">{fmt(monthExpense, state.preferences.currency)}</span>
           </div>
 
-          <div className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-gradient-to-r from-brand-500/10 to-brand-600/5 rounded-xl border border-brand-500/20">
-            <TrendingUp size={15} className="text-brand-400" />
-            <span className="text-xs text-text-muted hidden sm:inline">Balance:</span>
-            <span className={`text-xs sm:text-sm font-bold ${state.preferences.monthlyIncome > 0 ? 'text-brand-400' : ''}`}>
-              {fmt(state.preferences.monthlyIncome, state.preferences.currency)}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-brand-50 rounded-lg border border-brand-200">
+            <span className="text-xs text-text-muted">Balance:</span>
+            <span className="text-xs font-semibold text-brand-500">
+              {fmt(monthIncome - monthExpense, state.preferences.currency)}
             </span>
           </div>
 
+          {isGuest && (
+            <button onClick={() => navigate('/login')} className="flex items-center gap-1.5 px-3 py-1.5 bg-text-primary text-white rounded-lg text-xs font-medium hover:opacity-90 transition-all">
+              <LogIn size={13} /> <span className="hidden sm:inline">Inicia sesión</span>
+            </button>
+          )}
+
           {!isGuest && user && (
-            <button onClick={() => signOut()} className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-text-muted hover:text-danger hover:bg-danger/10 rounded-xl border border-border hover:border-danger/20 transition-all" title="Cerrar sesión">
+            <button
+              onClick={() => signOut()}
+              className="px-3 py-1.5 text-xs font-medium text-text-muted hover:text-danger hover:bg-danger/5 rounded-lg border border-border hover:border-danger/20 transition-all"
+              title="Cerrar sesión"
+            >
               Salir
             </button>
           )}
