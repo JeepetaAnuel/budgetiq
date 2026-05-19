@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from 'react'
 import { AnimatePresence } from 'framer-motion'
-import { Plus, Search, ArrowUpDown, ArrowUpRight, ArrowDownRight, X } from 'lucide-react'
+import { Plus, Search, ArrowUpDown, ArrowUpRight, ArrowDownRight, X, Wallet } from 'lucide-react'
 import Modal from '../components/ui/Modal'
 import TransactionRow from '../components/finance/TransactionRow'
 import EmptyState from '../components/ui/EmptyState'
@@ -152,7 +152,7 @@ export default function Transactions() {
         <div className="divide-y divide-border">
           <AnimatePresence mode="popLayout">
             {filtered.length === 0
-              ? <EmptyState icon={<Search size={24} />} title="Sin resultados" description={transactions.length === 0 ? 'Aún no hay transacciones registradas.' : 'No se encontraron transacciones con los filtros actuales.'} action={transactions.length === 0 ? <button onClick={openAdd} className="flex items-center gap-2 px-4 py-2 bg-brand-500 hover:bg-brand-600 text-white text-sm font-medium rounded-xl transition-colors"><Plus size={16} /> Añadir primera</button> : undefined} />
+              ? <EmptyState icon={<Wallet size={32} />} variant={transactions.length === 0 ? 'transactions' : 'search'} title={transactions.length === 0 ? 'No hay transacciones' : 'Sin resultados'} description={transactions.length === 0 ? 'Aún no hay transacciones registradas. Añade tu primera transacción para empezar a controlar tus finanzas.' : 'No se encontraron transacciones con los filtros actuales. Intenta con otros términos.'} action={transactions.length === 0 ? <button onClick={openAdd} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white text-sm font-semibold rounded-xl shadow-lg shadow-brand-500/20 hover:shadow-brand-500/30 transition-all"><Plus size={16} /> Añadir primera transacción</button> : undefined} />
               : filtered.map(t => <TransactionRow key={t.id} transaction={t} onEdit={openEdit} />)
             }
           </AnimatePresence>

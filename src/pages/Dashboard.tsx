@@ -287,7 +287,16 @@ export default function Dashboard() {
             <div className="divide-y divide-border -mx-1">
               {recent.map(t => <TransactionRow key={t.id} transaction={t} />)}
               {recent.length === 0 && (
-                <p className="text-sm text-text-muted text-center py-8">No hay transacciones recientes.</p>
+                <div className="flex flex-col items-center py-10 text-center">
+                  <div className="w-12 h-12 rounded-xl bg-surface-lighter border border-border flex items-center justify-center mb-3">
+                    <Wallet size={22} className="text-text-muted" />
+                  </div>
+                  <p className="text-sm font-medium text-text-muted mb-1">No hay transacciones recientes</p>
+                  <p className="text-xs text-text-muted/70">Añade tu primera transacción para empezar</p>
+                  <button onClick={() => navigate('/transactions')} className="mt-3 px-4 py-2 text-xs font-medium text-white bg-brand-500 hover:bg-brand-600 rounded-lg transition-colors">
+                    Ir a transacciones
+                  </button>
+                </div>
               )}
             </div>
           </div>
@@ -411,7 +420,15 @@ export default function Dashboard() {
                   <BudgetCard key={b.category} budget={b} currency={cur} />
                 ))}
                 {budgets.length === 0 && (
-                  <p className="text-xs text-text-muted text-center py-4">No hay presupuestos activos.</p>
+                  <div className="text-center py-6 bg-surface-lighter/20 rounded-xl border border-dashed border-border">
+                    <div className="w-10 h-10 rounded-xl bg-surface-lighter border border-border flex items-center justify-center mx-auto mb-2">
+                      <PiggyBank size={18} className="text-text-muted" />
+                    </div>
+                    <p className="text-xs font-medium text-text-muted">Sin presupuestos</p>
+                    <button onClick={() => navigate('/budgets')} className="mt-2 text-xs text-brand-400 hover:text-brand-300 font-medium">
+                      Crear presupuesto
+                    </button>
+                  </div>
                 )}
               </div>
             </div>

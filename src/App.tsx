@@ -1,4 +1,4 @@
-import { lazy, Suspense, Component, useState, type ReactNode } from 'react'
+import { lazy, Suspense, useState, type ReactNode } from 'react'
 import { BrowserRouter, Routes, Route, useNavigate } from 'react-router-dom'
 import { Sparkles } from 'lucide-react'
 import { AppProvider } from './store/AppContext'
@@ -7,6 +7,7 @@ import { ToastProvider } from './store/ToastContext'
 import { AuthProvider, useAuth } from './store/AuthContext'
 import Layout from './components/layout/Layout'
 import Landing from './pages/Landing'
+import { ErrorBoundary } from './components/ui/ErrorFallback'
 import LoadingScreen from './components/ui/LoadingScreen'
 
 const Login = lazy(() => import('./pages/Login'))
@@ -53,62 +54,45 @@ function GuestGate({ children }: { children: ReactNode }) {
   return <>{children}</>
 }
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | null }> {
-  state = { error: null as Error | null }
-  static getDerivedStateFromError(e: Error) { return { error: e } }
-  render() {
-    if (this.state.error) {
-      return (
-        <div className="min-h-screen bg-surface flex items-center justify-center p-8">
-          <div className="bg-surface-light border border-border rounded-2xl p-8 max-w-md w-full text-center space-y-4">
-            <div className="w-16 h-16 rounded-2xl bg-danger/10 border border-danger/20 flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
-            </div>
-            <h2 className="text-lg font-bold">Algo salió mal</h2>
-            <p className="text-sm text-text-muted">{this.state.error.message}</p>
-            <button onClick={() => window.location.reload()} className="px-6 py-2.5 bg-brand-500 hover:bg-brand-600 text-text-primary text-sm font-medium rounded-xl transition-colors">
-              Recargar página
-            </button>
-          </div>
-        </div>
-      )
-    }
-    return this.props.children
-  }
-}
-
 export default function App() {
   return (
-    <BrowserRouter>
-      <ThemeProvider>
-        <AuthProvider>
-          <ToastProvider>
-            <AppProvider>
-              <ErrorBoundary>
+    <>
+      <a
+        href="#main-content"
+        className="fixed -top-20 left-4 z-[100] px-4 py-2 bg-brand-500 text-white text-sm font-medium rounded-b-lg shadow-lg transition-all focus:top-0 focus:outline-none"
+      >
+        Saltar al contenido principal
+      </a>
+
+      <BrowserRouter>
+        <ThemeProvider>
+          <AuthProvider>
+            <ToastProvider>
+              <AppProvider>
                 <Suspense fallback={<LoadingScreen />}>
-                <Routes>
-                  <Route path="/" element={<Landing />} />
-                  <Route path="/login" element={<Login />} />
-                  <Route path="/signup" element={<Signup />} />
-                  <Route element={<GuestGate><Layout /></GuestGate>}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/budgets" element={<Budgets />} />
-                    <Route path="/ai-mode" element={<AIMode />} />
-                    <Route path="/transactions" element={<Transactions />} />
-                    <Route path="/settings" element={<Settings />} />
-                    <Route path="/statistics" element={<Statistics />} />
-                    <Route path="/scan-ticket" element={<ScanTicket />} />
-                    <Route path="/savings-goals" element={<SavingsGoals />} />
-                    <Route path="/shared-finances" element={<SharedFinances />} />
-                    <Route path="/calendar" element={<Calendar />} />
-                  </Route>
-                </Routes>
+                  <Routes>
+                    <Route path="/" element={<Landing />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/signup" element={<Signup />} />
+                    <Route element={<GuestGate><Layout /></GuestGate>}>
+                      <Route path="/dashboard" element={<ErrorBoundary page="Dashboard"><Dashboard /></ErrorBoundary>} />
+                      <Route path="/budgets" element={<ErrorBoundary page="Presupuestos"><Budgets /></ErrorBoundary>} />
+                      <Route path="/ai-mode" element={<ErrorBoundary page="Modo IA"><AIMode /></ErrorBoundary>} />
+                      <Route path="/transactions" element={<ErrorBoundary page="Transacciones"><Transactions /></ErrorBoundary>} />
+                      <Route path="/settings" element={<ErrorBoundary page="Ajustes"><Settings /></ErrorBoundary>} />
+                      <Route path="/statistics" element={<ErrorBoundary page="Estadísticas"><Statistics /></ErrorBoundary>} />
+                      <Route path="/scan-ticket" element={<ErrorBoundary page="Escanear Ticket"><ScanTicket /></ErrorBoundary>} />
+                      <Route path="/savings-goals" element={<ErrorBoundary page="Metas de Ahorro"><SavingsGoals /></ErrorBoundary>} />
+                      <Route path="/shared-finances" element={<ErrorBoundary page="Finanzas Compartidas"><SharedFinances /></ErrorBoundary>} />
+                      <Route path="/calendar" element={<ErrorBoundary page="Calendario"><Calendar /></ErrorBoundary>} />
+                    </Route>
+                  </Routes>
                 </Suspense>
-              </ErrorBoundary>
-            </AppProvider>
-          </ToastProvider>
-        </AuthProvider>
-      </ThemeProvider>
-    </BrowserRouter>
+              </AppProvider>
+            </ToastProvider>
+          </AuthProvider>
+        </ThemeProvider>
+      </BrowserRouter>
+    </>
   )
 }

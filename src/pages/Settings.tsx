@@ -91,7 +91,7 @@ export default function Settings() {
           <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center">{theme === 'dark' ? <Sun size={20} className="text-amber-400" /> : <Moon size={20} className="text-amber-400" />}</div>
           <div><h3 className="text-lg font-bold">Apariencia</h3><p className="text-sm text-text-muted">Personaliza el aspecto visual</p></div>
         </div>
-        <button onClick={toggle} className="flex items-center justify-between w-full p-4 rounded-xl border border-border hover:border-brand-500/30 bg-surface-lighter/20 hover:bg-surface-lighter/50 transition-all group">
+        <button onClick={toggle} className="flex items-center justify-between w-full p-4 rounded-xl border border-border hover:border-brand-500/30 bg-surface-lighter/20 hover:bg-surface-lighter/50 transition-all group" aria-label={`Cambiar a modo ${theme === 'dark' ? 'claro' : 'oscuro'}`}>
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-surface-lighter flex items-center justify-center group-hover:bg-brand-500/10 transition-colors">
               {theme === 'dark' ? <Sun size={20} className="text-text-muted group-hover:text-amber-400" /> : <Moon size={20} className="text-text-muted group-hover:text-amber-400" />}

@@ -56,7 +56,7 @@ export default function SavingsGoals() {
             <Plus size={16} /> Crear meta
           </button>
         </div>
-        <EmptyState icon={<Target size={48} />} title="No hay metas de ahorro" description="Crea tu primera meta y empieza a ahorrar para lo que más te importa." />
+        <EmptyState variant="savings" icon={<Target size={32} />} title="No hay metas de ahorro" description="Crea tu primera meta y empieza a ahorrar para lo que más te importa. Define objetivos como un viaje, un coche o un fondo de emergencia." action={<button onClick={() => setOpen(true)} className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-brand-500 to-brand-600 text-white text-sm font-semibold rounded-xl shadow-lg shadow-brand-500/20 hover:shadow-brand-500/30 transition-all"><Plus size={16} /> Crear primera meta</button>} />
         <Modal open={open} onClose={() => setOpen(false)} title="Nueva Meta de Ahorro">
           <GoalForm form={form} setForm={setForm} onSubmit={handleSubmit} onCancel={() => setOpen(false)} />
         </Modal>

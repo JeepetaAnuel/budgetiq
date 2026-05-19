@@ -31,11 +31,14 @@ export default function Modal({ open, onClose, title, children }: Props) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ type: 'spring', duration: 0.5 }}
-            className="relative bg-surface-light border border-border rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto shadow-2xl"
+            role="dialog"
+            aria-modal="true"
+            aria-label={title}
+            className="relative bg-surface-light border border-border rounded-2xl w-full max-w-lg max-h-[85vh] overflow-y-auto shadow-2xl mx-4"
           >
-            <div className="flex items-center justify-between p-5 border-b border-border">
+            <div className="flex items-center justify-between p-5 border-b border-border sticky top-0 bg-surface-light z-10 rounded-t-2xl">
               <h3 className="text-lg font-bold">{title}</h3>
-              <button onClick={onClose} className="p-2 hover:bg-surface-lighter rounded-xl text-text-muted hover:text-text-primary transition-colors">
+              <button onClick={onClose} className="p-2 hover:bg-surface-lighter rounded-xl text-text-muted hover:text-text-primary transition-colors" aria-label="Cerrar">
                 <X size={18} />
               </button>
             </div>

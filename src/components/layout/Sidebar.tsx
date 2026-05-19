@@ -75,7 +75,7 @@ export default function Sidebar() {
             >
               {({ isActive }) => (
                 <>
-                  <link.icon size={17} className={isActive ? 'text-brand-500' : 'text-text-muted group-hover:text-text-primary'} />
+                  <link.icon size={17} className={isActive ? 'text-brand-500' : 'text-text-muted group-hover:text-text-primary'} aria-hidden="true" />
                   <span>{link.label}</span>
                 </>
               )}
